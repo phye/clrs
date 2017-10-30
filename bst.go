@@ -129,6 +129,38 @@ func (bst *BinarySearchTree) IterativePostorderTraverse(tn *TreeNode) {
 	}
 }
 
+func (bst *BinarySearchTree) IterativePostorderTraverse2(tn *TreeNode) {
+	stack := []*TreeNode{tn}
+	processed := map[*TreeNode]bool{}
+	for {
+		if len(stack) == 0 {
+			return
+		}
+		cur := stack[len(stack)-1]
+		if processed[cur] != true {
+			if cur.Right != nil {
+				stack = append(stack, cur.Right)
+			}
+			if cur.Left != nil {
+				stack = append(stack, cur.Left)
+			}
+			processed[cur] = true
+		} else {
+			fmt.Printf("%v ", cur.Val)
+			stack = stack[:len(stack)-1]
+		}
+	}
+}
+
+func (bst *BinarySearchTree) BuildFromPreInTraverse(pre []int, in []int) {
+}
+
+func (bst *BinarySearchTree) BuildFromPrePostTraverse(pre []int, post []int) {
+}
+
+func (bst *BinarySearchTree) BuildFromInPostTraverse(in []int, post []int) {
+}
+
 func DumpStack(stack []*TreeNode) {
 	for _, tn := range stack {
 		fmt.Printf("%v ", tn.Val)
@@ -152,6 +184,6 @@ func main() {
 	fmt.Printf("\n")
 	bst.PostorderTraverse(bst.root)
 	fmt.Printf("\n")
-	bst.IterativePostorderTraverse(bst.root)
+	bst.IterativePostorderTraverse2(bst.root)
 	fmt.Printf("\n")
 }
