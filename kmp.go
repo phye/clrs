@@ -15,12 +15,11 @@ func KMPMatcher(T []byte, P []byte) {
 		if P[q] == T[i] {
 			q = q + 1
 		}
-		if q == m-1 {
-			fmt.Printf("Pattern occurs with shift %s", i-m)
+		if q == m {
+			fmt.Printf("Pattern occurs with shift %v\n", i-m+1)
+			q = pf[m-1]
 		}
-		q = pf[q]
 	}
-
 }
 
 func ComputePrefixFunction(P []byte) []int {
@@ -33,7 +32,15 @@ func ComputePrefixFunction(P []byte) []int {
 		if P[k] == P[q] {
 			k = k + 1
 		}
-		ret[q] = k
+		ret = append(ret, k)
 	}
+	fmt.Printf("%v\n", ret)
 	return ret
+}
+
+func main() {
+	T := []byte("bacbababaabcbababa")
+	P := []byte("ababa")
+
+	KMPMatcher(T, P)
 }
