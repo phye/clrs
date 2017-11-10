@@ -38,4 +38,6 @@ func maximumSum(A []int, i int, sums []int) {
 
 func main() {
 	fmt.Printf("%v\n", MaximumSum([]int{1, 101, 2, 3, 100, 4, 5}))
+	fmt.Printf("%v\n", MaximumSum([]int{3, 4, 5, 10}))
+	fmt.Printf("%v\n", MaximumSum([]int{10, 5, 4, 3}))
 }
