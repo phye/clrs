@@ -9,6 +9,9 @@ type (
 	Node struct {
 		value interface{}
 		edges []*Edge
+		color int
+		depth int
+		pi    *Node
 	}
 
 	Edge struct {
@@ -61,7 +64,7 @@ func (g *Graph) AddEdge(sn *Node, en *Node, weight int) (*Edge, error) {
 		for _, e := range sn.edges {
 			if e.end == en {
 				msg := "Edge already exist"
-				fmt.Printf("%v\n", msg)
+				//fmt.Printf("%v\n", msg)
 				return e, errors.New(msg)
 			}
 		}
@@ -69,7 +72,7 @@ func (g *Graph) AddEdge(sn *Node, en *Node, weight int) (*Edge, error) {
 		for _, e := range sn.edges {
 			if e.end == en || e.start == en {
 				msg := "Edge already exist"
-				fmt.Printf("%v\n", msg)
+				//fmt.Printf("%v\n", msg)
 				return e, errors.New(msg)
 			}
 		}

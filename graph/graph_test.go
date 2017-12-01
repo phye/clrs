@@ -1,7 +1,6 @@
 package graph
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -31,7 +30,7 @@ func TestRemoveNode(t *testing.T) {
 	g.AddEdge(n5, n1, 1)
 	g.AddEdge(n5, n2, 1)
 	g.AddEdge(n5, n4, 1)
-	fmt.Printf("%s", g)
+	//fmt.Printf("%s", g)
 	g.RemoveNode(n2)
 }
 
@@ -39,7 +38,7 @@ func TestGetNode(t *testing.T) {
 	g := NewGraph(false)
 	n5 := g.AddNode(5)
 	n := g.Node(5)
-	fmt.Printf("%p\n", n)
+	//fmt.Printf("%p\n", n)
 	if n != n5 {
 		t.Fatal("g.Node incorrect ptr!")
 	}
@@ -66,7 +65,7 @@ func TestAddEdge(t *testing.T) {
 	g.AddEdge(n5, n1, 1)
 	g.AddEdge(n5, n2, 1)
 	g.AddEdge(n5, n4, 1)
-	fmt.Printf("%s", g)
+	//fmt.Printf("%s", g)
 }
 
 func TestGetEdge(t *testing.T) {
