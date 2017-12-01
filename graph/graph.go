@@ -155,6 +155,34 @@ func (g *Graph) RemoveNode(t *Node) error {
 	return nil
 }
 
+func (g *Graph) Node(v interface{}) *Node {
+	for _, n := range g.nodes {
+		if n.value == v {
+			return n
+		}
+	}
+	return nil
+}
+
+func (g *Graph) Edge(n1 *Node, n2 *Node) *Edge {
+	for _, n := range g.nodes {
+		if n == n1 {
+			for _, e := range n.edges {
+				if g.directed {
+					if e.end == n2 {
+						return e
+					}
+				} else {
+					if e.start == n2 || e.end == n2 {
+						return e
+					}
+				}
+			}
+		}
+	}
+	return nil
+}
+
 func (g *Graph) String() string {
 	ret := "\n\n"
 	for _, n := range g.nodes {
