@@ -183,6 +183,22 @@ func (g *Graph) Edge(n1 *Node, n2 *Node) *Edge {
 	return nil
 }
 
+func (g *Graph) Adj(t *Node) []*Node {
+	ret := []*Node{}
+	for _, n := range g.nodes {
+		if n == t {
+			for _, e := range n.edges {
+				if e.start != n {
+					ret = append(ret, e.start)
+				} else {
+					ret = append(ret, e.end)
+				}
+			}
+		}
+	}
+	return ret
+}
+
 func (g *Graph) String() string {
 	ret := "\n\n"
 	for _, n := range g.nodes {

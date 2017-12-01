@@ -79,3 +79,35 @@ func TestGetEdge(t *testing.T) {
 		t.Fatalf("Incorrect Edge method")
 	}
 }
+
+func TestAdj(t *testing.T) {
+	g := NewGraph(false)
+	n1 := g.AddNode(1)
+	n2 := g.AddNode(2)
+	n3 := g.AddNode(3)
+	n4 := g.AddNode(4)
+	n5 := g.AddNode(5)
+	g.AddEdge(n1, n2, 1)
+	g.AddEdge(n1, n5, 1)
+	g.AddEdge(n2, n1, 1)
+	g.AddEdge(n2, n5, 1)
+	g.AddEdge(n2, n4, 1)
+	g.AddEdge(n2, n3, 1)
+	g.AddEdge(n3, n2, 1)
+	g.AddEdge(n3, n4, 1)
+	g.AddEdge(n4, n3, 1)
+	g.AddEdge(n4, n2, 1)
+	g.AddEdge(n4, n5, 1)
+	g.AddEdge(n5, n1, 1)
+	g.AddEdge(n5, n2, 1)
+	g.AddEdge(n5, n4, 1)
+
+	adj1 := g.Adj(n1)
+	adj2 := g.Adj(n2)
+	adj3 := g.Adj(n3)
+	adj4 := g.Adj(n4)
+	adj5 := g.Adj(n5)
+	if len(adj1) != 2 || len(adj2) != 4 || len(adj3) != 2 || len(adj4) != 3 || len(adj5) != 3 {
+		t.Fatalf("Incorrect adjacent nodes")
+	}
+}
