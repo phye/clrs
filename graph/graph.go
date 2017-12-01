@@ -1,4 +1,4 @@
-package main
+package graph
 
 import (
 	"errors"
@@ -61,7 +61,7 @@ func (g *Graph) AddEdge(sn *Node, en *Node, weight int) (*Edge, error) {
 		for _, e := range sn.edges {
 			if e.end == en {
 				msg := "Edge already exist"
-				//fmt.Printf("%v\n", msg)
+				fmt.Printf("%v\n", msg)
 				return e, errors.New(msg)
 			}
 		}
@@ -69,7 +69,7 @@ func (g *Graph) AddEdge(sn *Node, en *Node, weight int) (*Edge, error) {
 		for _, e := range sn.edges {
 			if e.end == en || e.start == en {
 				msg := "Edge already exist"
-				//fmt.Printf("%v\n", msg)
+				fmt.Printf("%v\n", msg)
 				return e, errors.New(msg)
 			}
 		}
@@ -92,7 +92,6 @@ func (g *Graph) RemoveEdge(e *Edge) error {
 		return errors.New(msg)
 	}
 
-	fmt.Printf("Removing edge <%v, %v>\n", e.start.value, e.end.value)
 	// Validate edge
 	cnt := 0
 	for _, n := range g.nodes {
@@ -111,7 +110,6 @@ func (g *Graph) RemoveEdge(e *Edge) error {
 	for i := 0; i < len(e.start.edges); i++ {
 		if e.start.edges[i] == e {
 			e.start.edges = append(e.start.edges[:i], e.start.edges[i+1:]...)
-			fmt.Printf("Removing edge <%v, %v> at node %v\n", e.start.value, e.end.value, e.start.value)
 			cnt += 1
 			break
 		}
@@ -119,7 +117,6 @@ func (g *Graph) RemoveEdge(e *Edge) error {
 	for i := 0; i < len(e.end.edges); i++ {
 		if e.end.edges[i] == e {
 			e.end.edges = append(e.end.edges[:i], e.end.edges[i+1:]...)
-			fmt.Printf("Removing edge <%v, %v> at node %v\n", e.start.value, e.end.value, e.end.value)
 			cnt += 1
 			break
 		}
@@ -172,30 +169,4 @@ func (g *Graph) String() string {
 		ret += "\n"
 	}
 	return ret
-}
-
-func main() {
-	g := NewGraph(false)
-	n1 := g.AddNode(1)
-	n2 := g.AddNode(2)
-	n3 := g.AddNode(3)
-	n4 := g.AddNode(4)
-	n5 := g.AddNode(5)
-	g.AddEdge(n1, n2, 1)
-	g.AddEdge(n1, n5, 1)
-	g.AddEdge(n2, n1, 1)
-	g.AddEdge(n2, n5, 1)
-	g.AddEdge(n2, n4, 1)
-	g.AddEdge(n2, n3, 1)
-	g.AddEdge(n3, n2, 1)
-	g.AddEdge(n3, n4, 1)
-	g.AddEdge(n4, n3, 1)
-	g.AddEdge(n4, n2, 1)
-	g.AddEdge(n4, n5, 1)
-	g.AddEdge(n5, n1, 1)
-	g.AddEdge(n5, n2, 1)
-	g.AddEdge(n5, n4, 1)
-	fmt.Printf("%s", g)
-	g.RemoveNode(n2)
-	fmt.Printf("%s", g)
 }
