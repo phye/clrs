@@ -4,6 +4,15 @@ import (
 	"fmt"
 )
 
+type (
+	// The following three fields are necessar for BFS
+	BFSAux struct {
+		color int
+		depth int
+		pi    *Node
+	}
+)
+
 const (
 	WHITE int = iota
 	GRAY
@@ -12,17 +21,14 @@ const (
 	INF int = 0x7fffffff
 )
 
-func (g *Graph) BFS(s *Node) {
+func (g *Graph) BFS(s *Node) map[*Node]*BFSAux {
+	bfsStatus := make(map[*Node]*BFSAux, 0)
 	for _, n := range g.nodes {
-		if n != s {
-			n.color = WHITE
-			n.depth = INF
-			n.pi = nil
-		}
+		bfsStatus[n] = &BFSAux{WHITE, INF, nil}
 	}
-	s.color = GRAY
-	s.depth = 0
-	s.pi = nil
+	bfsStatus[s].color = GRAY
+	bfsStatus[s].depth = 0
+	bfsStatus[s].pi = nil
 	queue := make([]*Node, 0)
 	queue = append(queue, s)
 	for {
@@ -32,23 +38,24 @@ func (g *Graph) BFS(s *Node) {
 		u := queue[0]
 		queue = queue[1:]
 		for _, v := range g.Adj(u) {
-			if v.color == WHITE {
-				v.color = GRAY
-				v.depth = u.depth + 1
-				v.pi = u
+			if bfsStatus[v].color == WHITE {
+				bfsStatus[v].color = GRAY
+				bfsStatus[v].depth = bfsStatus[u].depth + 1
+				bfsStatus[v].pi = u
 				queue = append(queue, v)
 			}
 		}
-		u.color = BLACK
-		if u.pi != nil {
+		bfsStatus[u].color = BLACK
+		if bfsStatus[u].pi != nil {
 			//fmt.Printf("%v %v %v\n", u.value, u.pi.value, u.depth)
 		}
 	}
+	return bfsStatus
 }
 
 func (g *Graph) Path(sn *Node, tn *Node) []*Node {
-	g.BFS(sn)
-	ret := g.path(sn, tn)
+	bfsStatus := g.BFS(sn)
+	ret := g.path(sn, tn, bfsStatus)
 	for _, n := range ret {
 		fmt.Printf("%v ", n.value)
 	}
@@ -56,14 +63,14 @@ func (g *Graph) Path(sn *Node, tn *Node) []*Node {
 	return ret
 }
 
-func (g *Graph) path(sn *Node, tn *Node) []*Node {
+func (g *Graph) path(sn *Node, tn *Node, bfsStatus map[*Node]*BFSAux) []*Node {
 	if sn == tn {
 		ret := []*Node{sn}
 		return ret
-	} else if tn.pi == nil {
+	} else if bfsStatus[tn].pi == nil {
 		return []*Node{}
 	} else {
-		ret := g.path(sn, tn.pi)
+		ret := g.path(sn, bfsStatus[tn].pi, bfsStatus)
 		if len(ret) > 0 {
 			ret = append(ret, tn)
 		}
