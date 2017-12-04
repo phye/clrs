@@ -11,6 +11,8 @@ type (
 		depth int
 		pi    *Node
 	}
+
+	BFSStatus map[*Node]*BFSAux
 )
 
 const (
@@ -21,8 +23,8 @@ const (
 	INF int = 0x7fffffff
 )
 
-func (g *Graph) BFS(s *Node) map[*Node]*BFSAux {
-	bfsStatus := make(map[*Node]*BFSAux, 0)
+func (g *Graph) BFS(s *Node) BFSStatus {
+	bfsStatus := make(BFSStatus, 0)
 	for _, n := range g.nodes {
 		bfsStatus[n] = &BFSAux{WHITE, INF, nil}
 	}
@@ -46,10 +48,8 @@ func (g *Graph) BFS(s *Node) map[*Node]*BFSAux {
 			}
 		}
 		bfsStatus[u].color = BLACK
-		if bfsStatus[u].pi != nil {
-			//fmt.Printf("%v %v %v\n", u.value, u.pi.value, u.depth)
-		}
 	}
+	fmt.Printf("%s", bfsStatus)
 	return bfsStatus
 }
 
@@ -63,7 +63,7 @@ func (g *Graph) Path(sn *Node, tn *Node) []*Node {
 	return ret
 }
 
-func (g *Graph) path(sn *Node, tn *Node, bfsStatus map[*Node]*BFSAux) []*Node {
+func (g *Graph) path(sn *Node, tn *Node, bfsStatus BFSStatus) []*Node {
 	if sn == tn {
 		ret := []*Node{sn}
 		return ret
@@ -76,4 +76,19 @@ func (g *Graph) path(sn *Node, tn *Node, bfsStatus map[*Node]*BFSAux) []*Node {
 		}
 		return ret
 	}
+}
+
+func (bfss BFSStatus) String() string {
+	var ret string
+	ret += fmt.Sprintf("------------BFS------------\n")
+	ret += fmt.Sprintf("%8s %8s %8s\n", "current", "parent", "depth")
+	for n, s := range bfss {
+		if s.pi != nil {
+			ret += fmt.Sprintf("%8v %8v %8v\n", n.value, s.pi.value, s.depth)
+		} else {
+			ret += fmt.Sprintf("%8v %8v %8v\n", n.value, "nil", s.depth)
+		}
+	}
+	ret += fmt.Sprintf("---------------------------\n")
+	return ret
 }

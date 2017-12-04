@@ -9,9 +9,6 @@ type (
 	Node struct {
 		value interface{}
 		edges []*Edge
-		color int
-		depth int
-		pi    *Node
 	}
 
 	Edge struct {
