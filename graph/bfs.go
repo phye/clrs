@@ -12,7 +12,7 @@ const (
 	INF int = 0x7fffffff
 )
 
-func BFS(g *Graph, s *Node) {
+func (g *Graph) BFS(s *Node) {
 	for _, n := range g.nodes {
 		if n != s {
 			n.color = WHITE
@@ -40,7 +40,33 @@ func BFS(g *Graph, s *Node) {
 			}
 		}
 		u.color = BLACK
-		fmt.Printf("%v\n", queue)
-		fmt.Printf("%v %v %v\n", u.value, u.color, u.depth)
+		if u.pi != nil {
+			//fmt.Printf("%v %v %v\n", u.value, u.pi.value, u.depth)
+		}
+	}
+}
+
+func (g *Graph) Path(sn *Node, tn *Node) []*Node {
+	g.BFS(sn)
+	ret := g.path(sn, tn)
+	for _, n := range ret {
+		fmt.Printf("%v ", n.value)
+	}
+	fmt.Printf("\n")
+	return ret
+}
+
+func (g *Graph) path(sn *Node, tn *Node) []*Node {
+	if sn == tn {
+		ret := []*Node{sn}
+		return ret
+	} else if tn.pi == nil {
+		return []*Node{}
+	} else {
+		ret := g.path(sn, tn.pi)
+		if len(ret) > 0 {
+			ret = append(ret, tn)
+		}
+		return ret
 	}
 }
