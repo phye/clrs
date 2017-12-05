@@ -40,13 +40,13 @@ func (g *Graph) AddNode(v interface{}) *Node {
 }
 
 func (g *Graph) AddEdge(sn *Node, en *Node, weight int) (*Edge, error) {
-	if sn == en {
-		return nil, errors.New("Same node")
-	}
 	// Validate start node and end node
 	cnt := 0
 	for _, n := range g.nodes {
-		if n == sn || n == en {
+		if n == sn {
+			cnt += 1
+		}
+		if n == en {
 			cnt += 1
 		}
 	}
@@ -81,21 +81,26 @@ func (g *Graph) AddEdge(sn *Node, en *Node, weight int) (*Edge, error) {
 		en,
 	}
 	sn.edges = append(sn.edges, ne)
-	en.edges = append(en.edges, ne)
+	if sn != en {
+		en.edges = append(en.edges, ne)
+	}
 	return ne, nil
 }
 
 func (g *Graph) RemoveEdge(e *Edge) error {
 	if e == nil {
 		msg := "Nil edge"
-		fmt.Printf(msg)
+		fmt.Printf("Error: %s\n", msg)
 		return errors.New(msg)
 	}
 
 	// Validate edge
 	cnt := 0
 	for _, n := range g.nodes {
-		if n == e.start || n == e.end {
+		if n == e.start {
+			cnt += 1
+		}
+		if n == e.end {
 			cnt += 1
 		}
 	}
@@ -188,10 +193,11 @@ func (g *Graph) Adj(t *Node) []*Node {
 	for _, n := range g.nodes {
 		if n == t {
 			for _, e := range n.edges {
-				if e.start != n {
-					ret = append(ret, e.start)
-				} else {
+				if e.start == n {
 					ret = append(ret, e.end)
+				}
+				if !g.directed && e.start != n {
+					ret = append(ret, e.start)
 				}
 			}
 		}
