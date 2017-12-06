@@ -28,3 +28,38 @@ func TestDFS(test *testing.T) {
 
 	g.DFS()
 }
+
+func TestDFSDirected(test *testing.T) {
+	g := NewGraph(true)
+	n1 := g.AddNode(1)
+	n2 := g.AddNode(2)
+	n3 := g.AddNode(3)
+	n7 := g.AddNode(7)
+	n8 := g.AddNode(8)
+
+	g.AddEdge(n1, n2, 1)
+	g.AddEdge(n1, n3, 1)
+	g.AddEdge(n2, n3, 1)
+	g.AddEdge(n2, n7, 1)
+	g.AddEdge(n3, n8, 1)
+	g.AddEdge(n7, n3, 1)
+
+	g.DFS()
+}
+
+func TestDFSDirectedNotConnected(test *testing.T) {
+	g := NewGraph(true)
+	n1 := g.AddNode(1)
+	n2 := g.AddNode(2)
+	n3 := g.AddNode(3)
+	n7 := g.AddNode(7)
+	n8 := g.AddNode(8)
+
+	g.AddEdge(n1, n2, 1)
+	g.AddEdge(n1, n3, 1)
+	g.AddEdge(n2, n3, 1)
+
+	g.AddEdge(n7, n8, 1)
+
+	g.DFS()
+}

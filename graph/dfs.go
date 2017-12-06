@@ -20,6 +20,7 @@ var (
 
 func (g *Graph) DFS() DFSStatus {
 	dfsStatus := make(DFSStatus, 0)
+	time = 0
 	for _, n := range g.nodes {
 		dfsStatus[n] = &DFSAux{WHITE, nil, INF, INF}
 	}
@@ -49,7 +50,7 @@ func (g *Graph) dfsVisit(u *Node, dfsStatus DFSStatus) {
 
 func (dfss DFSStatus) String() string {
 	var ret string
-	ret += fmt.Sprintf("------------DFS------------\n")
+	ret += fmt.Sprintf("--------------------DFS--------------------\n")
 	ret += fmt.Sprintf("%8s %8s %8s %8s\n", "current", "parent", "start", "finish")
 	for n, s := range dfss {
 		if s.pi != nil {
@@ -58,6 +59,6 @@ func (dfss DFSStatus) String() string {
 			ret += fmt.Sprintf("%8v %8v %8v %8v\n", n.value, "nil", s.d, s.f)
 		}
 	}
-	ret += fmt.Sprintf("---------------------------\n")
+	ret += fmt.Sprintf("-------------------------------------------\n")
 	return ret
 }
