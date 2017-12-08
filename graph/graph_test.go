@@ -145,3 +145,28 @@ func TestDirectedGraph(t *testing.T) {
 	g.RemoveEdge(e21)
 	fmt.Printf("After removing nil Edge (2,1) %s", g)
 }
+
+func TestTranspose(t *testing.T) {
+	g := NewGraph(true)
+	n1 := g.AddNode(1)
+	n2 := g.AddNode(2)
+	n3 := g.AddNode(3)
+	n7 := g.AddNode(7)
+	n8 := g.AddNode(8)
+	g.AddEdge(n1, n2, 1)
+	g.AddEdge(n1, n3, 1)
+	g.AddEdge(n2, n3, 1)
+	g.AddEdge(n2, n7, 1)
+	g.AddEdge(n3, n7, 1)
+	g.AddEdge(n3, n8, 1)
+	adj1 := g.Adj(n1)
+	adj2 := g.Adj(n2)
+	adj3 := g.Adj(n3)
+	adj7 := g.Adj(n7)
+	adj8 := g.Adj(n8)
+	if len(adj1) != 2 || len(adj2) != 2 || len(adj3) != 2 || len(adj7) != 0 || len(adj8) != 0 {
+		t.Fatalf("Incorrect adjacent ndoes for directed graph")
+	}
+	fmt.Printf("Original graph: %s", g)
+	fmt.Printf("After transpose: %s", g.Transpose())
+}

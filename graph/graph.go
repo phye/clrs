@@ -208,10 +208,12 @@ func (g *Graph) Adj(t *Node) []*Node {
 func (g *Graph) String() string {
 	ret := "\n\n"
 	for _, n := range g.nodes {
-		ret += fmt.Sprintf("%v: %p \t", n.value, n)
+		ret += fmt.Sprintf("%-12v: \t", n.value)
 		for _, e := range n.edges {
 			if g.directed {
-				ret += fmt.Sprintf("%v --> %v ", e.start.value, e.end.value)
+				if e.start == n {
+					ret += fmt.Sprintf("%v --> %v ", e.start.value, e.end.value)
+				}
 			} else {
 				ret += fmt.Sprintf("%v --- %v ", e.start.value, e.end.value)
 			}
@@ -219,4 +221,22 @@ func (g *Graph) String() string {
 		ret += "\n"
 	}
 	return ret
+}
+
+func (g *Graph) Transpose() *Graph {
+	m := make(map[*Node]*Node, 0)
+	if !g.directed {
+		return g
+	}
+	ng := NewGraph(g.directed)
+	for _, n := range g.nodes {
+		nn := ng.AddNode(n.value)
+		m[n] = nn
+	}
+	for _, n := range g.nodes {
+		for _, e := range n.edges {
+			ng.AddEdge(m[e.end], m[e.start], e.weight)
+		}
+	}
+	return ng
 }
