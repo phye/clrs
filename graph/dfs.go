@@ -88,7 +88,7 @@ func (g *Graph) TopoSort() {
 }
 
 // Divide graph into strongly connected components(subgraphs)
-func (g *Graph) Partition() []*Graph {
+func (g *Graph) Decomposition() []*Graph {
 	ret := []*Graph{}
 	g.DFS()
 	gt := g.Transpose()

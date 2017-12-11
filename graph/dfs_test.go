@@ -91,7 +91,7 @@ func TestTopoSort(test *testing.T) {
 	fmt.Printf("After Toposort, the graph is %s", g)
 }
 
-func TestPartition(test *testing.T) {
+func TestDecomposition(test *testing.T) {
 	gh := NewGraph(true)
 	a := gh.AddNode("a")
 	b := gh.AddNode("b")
@@ -117,8 +117,8 @@ func TestPartition(test *testing.T) {
 	gh.AddEdge(g, h, 1)
 	gh.AddEdge(h, h, 1)
 
-	pgs := gh.Partition()
-	fmt.Printf("After partition, strongly connected components are ")
+	pgs := gh.Decomposition()
+	fmt.Printf("After decomposition, strongly connected components are ")
 	for _, pg := range pgs {
 		fmt.Printf("%s", pg)
 	}
