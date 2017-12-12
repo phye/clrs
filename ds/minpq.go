@@ -6,8 +6,8 @@ import (
 
 type (
 	Item struct {
-		value    interface{}
-		priority int
+		Value    interface{}
+		Priority int
 		index    int
 	}
 	minpq struct {
@@ -26,12 +26,14 @@ func (pq *minpq) Len() int {
 
 // Required by heap.(sort).Interface
 func (pq *minpq) Less(i, j int) bool {
-	return pq.items[i].priority < pq.items[j].priority
+	return pq.items[i].Priority < pq.items[j].Priority
 }
 
 // Required by heap.(sort).Interface
 func (pq *minpq) Swap(i, j int) {
 	pq.items[i], pq.items[j] = pq.items[j], pq.items[i]
+	pq.items[i].index = i
+	pq.items[j].index = j
 }
 
 // Required by heap.Interface
@@ -77,6 +79,20 @@ func (mpq *MinPriorityQueue) Pop() interface{} {
 
 // Update the item with new priority
 func (mpq *MinPriorityQueue) Update(item *Item, priority int) {
-	item.priority = priority
+	item.Priority = priority
 	heap.Fix(mpq.pq, item.index)
+}
+
+func (mpq *MinPriorityQueue) Empty() bool {
+	return mpq.pq.Len() == 0
+}
+
+// Return *Item matching value /x/
+func (mpq *MinPriorityQueue) Item(x interface{}) *Item {
+	for _, item := range mpq.pq.items {
+		if item.Value == x {
+			return item
+		}
+	}
+	return nil
 }

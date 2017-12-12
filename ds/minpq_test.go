@@ -25,4 +25,16 @@ func TestMinPriorityQueue(t *testing.T) {
 		fmt.Printf("%v ", mpq.pq.items[i])
 	}
 	fmt.Println()
+
+	item := mpq.Item(10)
+	if item == nil {
+		t.Fatal("Nil item")
+	}
+
+	mpq.Update(item, 1)
+	fmt.Printf("After Priority Queue Update, pq is \n")
+	for i := 0; i < len(mpq.pq.items); i++ {
+		fmt.Printf("%v ", mpq.pq.items[i])
+	}
+	fmt.Println()
 }
