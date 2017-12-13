@@ -37,6 +37,7 @@ func (pq *minpq) Swap(i, j int) {
 }
 
 // Required by heap.Interface
+// add x as element Len()
 func (pq *minpq) Push(x interface{}) {
 	n := len(pq.items)
 	item := x.(*Item)
@@ -45,6 +46,7 @@ func (pq *minpq) Push(x interface{}) {
 }
 
 // Required by heap.Interface
+// remove and return element Len() - 1.
 func (pq *minpq) Pop() interface{} {
 	item := pq.items[len(pq.items)-1]
 	item.index = -1
