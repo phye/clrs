@@ -7,40 +7,53 @@ import (
 
 type (
 	PRIMAux struct {
-		c        *Node // Current node
-		pi       *Node // Parent node
-		isolated bool
+		c        *Node // Current node, reverse pointer for quicker lookup
+		pi       *Node // Parent node, filled during PRIM MST execution
+		isolated bool  // Is the node still in Q?
 	}
 	PRIMStatus map[*Node]*PRIMAux
 )
 
-func (g *Graph) PrimMST(r *Node) PRIMStatus {
-	ps := make(PRIMStatus, 0)
+// Return an MST graph constructed via PRIM algorithm
+func (g *Graph) PrimMST(r *Node) *Graph {
+	ng := NewGraph(g.directed)
+	// Temp map to store g.node <-> ng.node
+	nm := make(map[*Node]*Node)
+
+	psm := make(PRIMStatus)
 	Q := ds.NewMinPriorityQueue()
 	for _, n := range g.nodes {
-		ps[n] = &PRIMAux{n, nil, true}
-		Q.Push(ps[n], INF)
+		psm[n] = &PRIMAux{n, nil, true}
+		// NOTE: ds.Item.Value is a pointer to PRIMAux
+		Q.Push(psm[n], INF)
 	}
-	Q.Update(Q.Item(ps[r]), 0)
+	Q.Update(Q.Item(psm[r]), 0)
 	for {
 		if Q.Empty() {
 			break
 		}
-		//uii := Q.Pop() // u item interface, interface{} which is often *ds.Item
-		ui := Q.Pop().(*ds.Item)
-		pma := ui.Value.(*PRIMAux) // Value is interface {} which is *PRIMAux in this case
+		uitem := Q.Pop().(*ds.Item)
+		pma := uitem.Value.(*PRIMAux) // Value is interface {} which is *PRIMAux in this case
+		pma.isolated = false          // Once a node is POPed from Q, it is no longer isolated
 		u := pma.c
-		pma.isolated = false
-		fmt.Printf("Processing node %s\n", u.value)
+		nm[u] = ng.AddNode(u.value)
+		if psm[u].pi != nil {
+			pi := psm[u].pi
+			ng.AddEdge(nm[pi], nm[u], g.Edge(pi, u).weight)
+		}
 		for _, v := range g.Adj(u) {
-			if ps[v].isolated && g.Edge(u, v).weight < Q.Item(ps[v]).Priority {
-				ps[v].pi = u
-				fmt.Printf("\tProcessing node %s\n", v.value)
-				Q.Update(Q.Item(ps[v]), g.Edge(u, v).weight)
+			// if v is in Q
+			if psm[v].isolated {
+				weight := g.Edge(u, v).weight
+				vitem := Q.Item(psm[v])
+				if weight < vitem.Priority {
+					psm[v].pi = u
+					Q.Update(vitem, weight)
+				}
 			}
 		}
 	}
-	return ps
+	return ng
 }
 
 func (ps PRIMStatus) String() string {

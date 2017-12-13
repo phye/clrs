@@ -32,6 +32,9 @@ func TestPrimMST(test *testing.T) {
 	gh.AddEdge(g, i, 6)
 	gh.AddEdge(h, i, 7)
 
-	pms := gh.PrimMST(a)
-	fmt.Printf("%s", pms)
+	ngh := gh.PrimMST(a)
+	fmt.Println("\n----------------PRIM MST ----------------")
+	fmt.Printf("Original graph is %s", gh)
+	fmt.Printf("Prim MST is %s", ngh)
+	fmt.Println("----------------PRIM MST ----------------")
 }
