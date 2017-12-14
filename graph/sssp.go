@@ -51,6 +51,16 @@ func (g *Graph) BellmanFord(s *Node) *Graph {
 		}
 	}
 
+	for _, n := range g.nodes {
+		for _, e := range n.edges {
+			if e.start == n {
+				if sam[e.end].d > sam[e.start].d+e.weight {
+					return nil
+				}
+			}
+		}
+	}
+
 	for n, _ := range sam {
 		mm[n] = ng.AddNode(n.value)
 	}
