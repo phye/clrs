@@ -94,24 +94,8 @@ func (g *Graph) RemoveEdge(e *Edge) error {
 		return errors.New(msg)
 	}
 
-	// Validate edge
-	cnt := 0
-	for _, n := range g.nodes {
-		if n == e.start {
-			cnt += 1
-		}
-		if n == e.end {
-			cnt += 1
-		}
-	}
-	if cnt != 2 {
-		msg := "Edge not found in graph"
-		fmt.Printf(msg)
-		return errors.New(msg)
-	}
-
 	// Remove edge
-	cnt = 0
+	cnt := 0
 	for i := 0; i < len(e.start.edges); i++ {
 		if e.start.edges[i] == e {
 			e.start.edges = append(e.start.edges[:i], e.start.edges[i+1:]...)
@@ -126,7 +110,7 @@ func (g *Graph) RemoveEdge(e *Edge) error {
 			break
 		}
 	}
-	if cnt != 2 {
+	if (e.start != e.end && cnt != 2) || (e.start == e.end && cnt != 1) {
 		msg := fmt.Sprintf("Invalid endpoints for edge <%v, %v>", e.start.value, e.end.value)
 		fmt.Printf(msg)
 		return errors.New(msg)
@@ -224,6 +208,7 @@ func (g *Graph) String() string {
 	return ret
 }
 
+// For Directed Graph, return a new graph with every edge direction reverted
 func (g *Graph) Transpose() *Graph {
 	m := make(map[*Node]*Node, 0)
 	if !g.directed {
