@@ -212,10 +212,10 @@ func (g *Graph) String() string {
 		for _, e := range n.edges {
 			if g.directed {
 				if e.start == n {
-					ret += fmt.Sprintf("%v --%d--> %v ", e.start.value, e.weight, e.end.value)
+					ret += fmt.Sprintf("%v --(%d)--> %v ", e.start.value, e.weight, e.end.value)
 				}
 			} else {
-				ret += fmt.Sprintf("%v --%d-- %v ", e.start.value, e.weight, e.end.value)
+				ret += fmt.Sprintf("%v --(%d)-- %v ", e.start.value, e.weight, e.end.value)
 			}
 		}
 		ret += "\n"

@@ -1,8 +1,6 @@
 package graph
 
-import (
-	"fmt"
-)
+import ()
 
 type (
 	// Single-Source Shortest Paths
@@ -39,8 +37,9 @@ func (g *Graph) relax(sam SSSAuxMap, e *Edge) {
 }
 
 func (g *Graph) BellmanFord(s *Node) *Graph {
-	ret := NewGraph(g.directed)
+	ng := NewGraph(g.directed)
 	sam := g.initSingleSourceAuxMap(s)
+	mm := make(map[*Node]*Node)
 	for i := 1; i < len(g.nodes)-1; i++ {
 		for _, n := range g.nodes {
 			for _, e := range n.edges {
@@ -51,5 +50,16 @@ func (g *Graph) BellmanFord(s *Node) *Graph {
 			}
 		}
 	}
-	return ret
+
+	for n, _ := range sam {
+		mm[n] = ng.AddNode(n.value)
+	}
+
+	for n, sa := range sam {
+		if sa.pi != nil {
+			pi := sa.pi
+			ng.AddEdge(mm[pi], mm[n], g.Edge(pi, n).weight)
+		}
+	}
+	return ng
 }
