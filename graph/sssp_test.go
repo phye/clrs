@@ -51,3 +51,27 @@ func TestDAGShortestPaths(test *testing.T) {
 	ng := g.DAGShortestPaths(s)
 	fmt.Printf("DAG shortest path is %s\n", ng)
 }
+
+func TestDijkstra(test *testing.T) {
+	g := NewGraph(true)
+
+	x := g.AddNode("x")
+	t := g.AddNode("t")
+	y := g.AddNode("y")
+	s := g.AddNode("s")
+	z := g.AddNode("z")
+
+	g.AddEdge(s, t, 10)
+	g.AddEdge(s, y, 5)
+	g.AddEdge(t, y, 2)
+	g.AddEdge(t, x, 1)
+	g.AddEdge(x, z, 4)
+	g.AddEdge(y, t, 3)
+	g.AddEdge(y, x, 9)
+	g.AddEdge(y, z, 2)
+	g.AddEdge(z, s, 2)
+	g.AddEdge(z, x, 6)
+
+	ng := g.Dijkstra(s)
+	fmt.Printf("SSSP via Dijkstra is %s\n", ng)
+}

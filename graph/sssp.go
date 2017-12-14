@@ -1,14 +1,20 @@
 package graph
 
+import (
+	"fmt"
+	"github.com/phye/clrs/ds"
+)
+
 type (
 	// Single-Source Shortest Paths
 	// Note the similarity between BFS and SSS problem:
 	// BFS solves the problem of minimum number of edges, while SSS solves the problem of
 	// minimum weight of edges
 	SSSAux struct {
-		d  int   // Shortest-path estimate
-		pi *Node // Parent Node in SSS tree
-		c  *Node // Reverse Pointer to current node
+		d        int   // Shortest-path estimate
+		pi       *Node // Parent Node in SSS tree
+		c        *Node // Reverse Pointer to current node
+		isolated bool
 	}
 
 	SSSAuxMap map[*Node]*SSSAux
@@ -21,6 +27,7 @@ func (g *Graph) initSingleSourceAuxMap(s *Node) SSSAuxMap {
 			INF,
 			nil,
 			n,
+			true,
 		}
 	}
 	sam[s].d = 0
@@ -89,6 +96,39 @@ func (g *Graph) DAGShortestPaths(s *Node) *Graph {
 		if sa.pi != nil {
 			pi := sa.pi
 			ng.AddEdge(mm[pi], mm[n], g.Edge(pi, n).weight)
+		}
+	}
+	return ng
+}
+
+func (g *Graph) Dijkstra(s *Node) *Graph {
+	Q := ds.NewMinPriorityQueue()
+	sam := g.initSingleSourceAuxMap(s)
+	for _, sa := range sam {
+		Q.Push(sa, sa.d)
+	}
+
+	ng := NewGraph(g.directed)
+	mm := make(map[*Node]*Node)
+	for {
+		if Q.Empty() {
+			break
+		}
+		uitem := Q.Pop().(*ds.Item)
+		sa := uitem.Value.(*SSSAux)
+		u := sa.c
+		sa.isolated = false
+		mm[u] = ng.AddNode(u.value)
+		if sa.pi != nil {
+			ng.AddEdge(mm[sa.pi], mm[u], g.Edge(sa.pi, u).weight)
+		}
+		for _, v := range g.Adj(u) {
+			if sam[v].isolated {
+				g.relax(sam, g.Edge(u, v))
+				fmt.Printf("Processing node %s\n", v.value)
+				vitem := Q.Item(sam[v])
+				Q.Update(vitem, sam[v].d)
+			}
 		}
 	}
 	return ng
