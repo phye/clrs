@@ -138,11 +138,9 @@ func TestDirectedGraph(t *testing.T) {
 	fmt.Printf("node 3 removed %s", g)
 	g.AddEdge(n8, n8, 1)
 	fmt.Printf("%s", g)
-	e27 := g.Edge(n2, n7)
-	g.RemoveEdge(e27)
+	g.RemoveEdge(n2, n7)
 	fmt.Printf("Edge (2,7) removed %s", g)
-	e21 := g.Edge(n2, n1)
-	g.RemoveEdge(e21)
+	g.RemoveEdge(n2, n1)
 	fmt.Printf("After removing nil Edge (2,1) %s", g)
 }
 

@@ -39,7 +39,16 @@ func (g *Graph) AddNode(v interface{}) *Node {
 	return n
 }
 
-func (g *Graph) AddEdge(sn *Node, en *Node, weight int) (*Edge, error) {
+func (g *Graph) AddEdge(sv, ev interface{}, weight int) (*Edge, error) {
+	var sn, en *Node
+	switch sv.(type) {
+	case *Node:
+		sn = sv.(*Node)
+		en = ev.(*Node)
+	default:
+		sn = g.Node(sv)
+		en = g.Node(ev)
+	}
 	// Validate start node and end node
 	cnt := 0
 	for _, n := range g.nodes {
@@ -87,7 +96,8 @@ func (g *Graph) AddEdge(sn *Node, en *Node, weight int) (*Edge, error) {
 	return ne, nil
 }
 
-func (g *Graph) RemoveEdge(e *Edge) error {
+func (g *Graph) RemoveEdge(sv, ev interface{}) error {
+	e := g.Edge(sv, ev)
 	if e == nil {
 		msg := "Nil edge"
 		fmt.Printf("Error: %s\n", msg)
@@ -118,7 +128,15 @@ func (g *Graph) RemoveEdge(e *Edge) error {
 	return nil
 }
 
-func (g *Graph) RemoveNode(t *Node) error {
+func (g *Graph) RemoveNode(tv interface{}) error {
+	var t *Node
+	switch tv.(type) {
+	case *Node:
+		t = tv.(*Node)
+	default:
+		t = g.Node(tv)
+	}
+
 	var n *Node
 	var idx int
 	for i, nd := range g.nodes {
@@ -137,7 +155,7 @@ func (g *Graph) RemoveNode(t *Node) error {
 	// already deleted
 	for _ = range n.edges {
 		e := n.edges[0]
-		g.RemoveEdge(e)
+		g.RemoveEdge(e.start, e.end)
 		e = nil
 	}
 	g.nodes = append(g.nodes[:idx], g.nodes[idx+1:]...)
@@ -153,7 +171,16 @@ func (g *Graph) Node(v interface{}) *Node {
 	return nil
 }
 
-func (g *Graph) Edge(n1 *Node, n2 *Node) *Edge {
+func (g *Graph) Edge(sv, ev interface{}) *Edge {
+	var n1, n2 *Node
+	switch sv.(type) {
+	case *Node:
+		n1 = sv.(*Node)
+		n2 = ev.(*Node)
+	default:
+		n1 = g.Node(sv)
+		n2 = g.Node(ev)
+	}
 	for _, n := range g.nodes {
 		if n == n1 {
 			for _, e := range n.edges {
@@ -172,7 +199,14 @@ func (g *Graph) Edge(n1 *Node, n2 *Node) *Edge {
 	return nil
 }
 
-func (g *Graph) Adj(t *Node) []*Node {
+func (g *Graph) Adj(tv interface{}) []*Node {
+	var t *Node
+	switch tv.(type) {
+	case *Node:
+		t = tv.(*Node)
+	default:
+		t = g.Node(tv)
+	}
 	ret := []*Node{}
 	for _, n := range g.nodes {
 		if n == t {
