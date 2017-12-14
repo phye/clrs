@@ -1,7 +1,5 @@
 package graph
 
-import ()
-
 type (
 	// Single-Source Shortest Paths
 	// Note the similarity between BFS and SSS problem:
@@ -37,9 +35,7 @@ func (g *Graph) relax(sam SSSAuxMap, e *Edge) {
 }
 
 func (g *Graph) BellmanFord(s *Node) *Graph {
-	ng := NewGraph(g.directed)
 	sam := g.initSingleSourceAuxMap(s)
-	mm := make(map[*Node]*Node)
 	for i := 1; i < len(g.nodes)-1; i++ {
 		for _, n := range g.nodes {
 			for _, e := range n.edges {
@@ -61,10 +57,34 @@ func (g *Graph) BellmanFord(s *Node) *Graph {
 		}
 	}
 
+	ng := NewGraph(g.directed)
+	mm := make(map[*Node]*Node)
 	for n, _ := range sam {
 		mm[n] = ng.AddNode(n.value)
 	}
+	for n, sa := range sam {
+		if sa.pi != nil {
+			pi := sa.pi
+			ng.AddEdge(mm[pi], mm[n], g.Edge(pi, n).weight)
+		}
+	}
+	return ng
+}
 
+func (g *Graph) DAGShortestPaths(s *Node) *Graph {
+	g.TopoSort()
+	sam := g.initSingleSourceAuxMap(s)
+	for _, u := range g.nodes {
+		for _, v := range g.Adj(u) {
+			g.relax(sam, g.Edge(u, v))
+		}
+	}
+
+	ng := NewGraph(g.directed)
+	mm := make(map[*Node]*Node)
+	for n, _ := range sam {
+		mm[n] = ng.AddNode(n.value)
+	}
 	for n, sa := range sam {
 		if sa.pi != nil {
 			pi := sa.pi
