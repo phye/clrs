@@ -8,11 +8,10 @@ type (
 	// The following three fields are necessar for BFS
 	BFSAux struct {
 		color int
-		depth int
-		pi    *Node
+		NodeAux
 	}
 
-	BFSStatus map[*Node]*BFSAux
+	BFSStatus map[interface{}]*BFSAux
 )
 
 const (
@@ -23,15 +22,16 @@ const (
 	INF int = 0x7fffffff
 )
 
-func (g *Graph) BFS(s *Node) BFSStatus {
+// Perform Bread-First-Search on Graph g and return the result in BFSStatus
+func BFS(g Graph, s interface{}) BFSStatus {
 	bfsStatus := make(BFSStatus, 0)
-	for _, n := range g.nodes {
-		bfsStatus[n] = &BFSAux{WHITE, INF, nil}
+	for _, n := range g.Nodes() {
+		bfsStatus[n] = &BFSAux{WHITE, NodeAux{nil, nil, INF}}
 	}
 	bfsStatus[s].color = GRAY
-	bfsStatus[s].depth = 0
+	bfsStatus[s].d = 0
 	bfsStatus[s].pi = nil
-	queue := make([]*Node, 0)
+	queue := make([]interface{}, 0)
 	queue = append(queue, s)
 	for {
 		if len(queue) == 0 {
@@ -39,10 +39,11 @@ func (g *Graph) BFS(s *Node) BFSStatus {
 		}
 		u := queue[0]
 		queue = queue[1:]
-		for _, v := range g.Adj(u) {
+		adjs, _ := g.Adj(u)
+		for _, v := range adjs {
 			if bfsStatus[v].color == WHITE {
 				bfsStatus[v].color = GRAY
-				bfsStatus[v].depth = bfsStatus[u].depth + 1
+				bfsStatus[v].d = bfsStatus[u].d + 1
 				bfsStatus[v].pi = u
 				queue = append(queue, v)
 			}
@@ -53,26 +54,29 @@ func (g *Graph) BFS(s *Node) BFSStatus {
 	return bfsStatus
 }
 
-func (g *Graph) Path(sn *Node, tn *Node) []*Node {
-	bfsStatus := g.BFS(sn)
-	ret := g.path(sn, tn, bfsStatus)
-	for _, n := range ret {
-		fmt.Printf("%v ", n.value)
+// Return the shortest path from sv to ev in a graph which has same weights of all edges.
+// Note the difference between Path and SSSP (single-source shortest path)
+func Path(g Graph, sv, ev interface{}) []interface{} {
+	bfsStatus := BFS(g, sv)
+	ret := path(g, sv, ev, bfsStatus)
+	fmt.Printf("Path from %v to %v is: \n\t", sv, ev)
+	for _, v := range ret {
+		fmt.Printf("%v ", v)
 	}
 	fmt.Printf("\n")
 	return ret
 }
 
-func (g *Graph) path(sn *Node, tn *Node, bfsStatus BFSStatus) []*Node {
-	if sn == tn {
-		ret := []*Node{sn}
+func path(g Graph, sv, ev interface{}, bfsStatus BFSStatus) []interface{} {
+	if sv == ev {
+		ret := []interface{}{sv}
 		return ret
-	} else if bfsStatus[tn].pi == nil {
-		return []*Node{}
+	} else if bfsStatus[ev].pi == nil {
+		return []interface{}{}
 	} else {
-		ret := g.path(sn, bfsStatus[tn].pi, bfsStatus)
+		ret := path(g, sv, bfsStatus[ev].pi, bfsStatus)
 		if len(ret) > 0 {
-			ret = append(ret, tn)
+			ret = append(ret, ev)
 		}
 		return ret
 	}
@@ -84,9 +88,9 @@ func (bfss BFSStatus) String() string {
 	ret += fmt.Sprintf("%8s %8s %8s\n", "current", "parent", "depth")
 	for n, s := range bfss {
 		if s.pi != nil {
-			ret += fmt.Sprintf("%8v %8v %8v\n", n.value, s.pi.value, s.depth)
+			ret += fmt.Sprintf("%8v %8v %8v\n", n, s.pi, s.d)
 		} else {
-			ret += fmt.Sprintf("%8v %8v %8v\n", n.value, "nil", s.depth)
+			ret += fmt.Sprintf("%8v %8v %8v\n", n, "nil", s.d)
 		}
 	}
 	ret += fmt.Sprintf("---------------------------\n")
