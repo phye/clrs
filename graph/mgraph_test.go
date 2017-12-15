@@ -57,4 +57,7 @@ func TestDirectedMGraph(t *testing.T) {
 	if len(adjs) != 1 {
 		t.Fatalf("Incorrect Adj for directed graph")
 	}
+
+	ng := g.Transpose()
+	fmt.Printf("Transposed matrix graph is \n%s", ng)
 }

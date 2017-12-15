@@ -50,6 +50,64 @@ func (mg *MGraph) AddEdge(sv, ev interface{}, weight int) error {
 	return nil
 }
 
+func (mg *MGraph) Adj(tv interface{}) ([]interface{}, error) {
+	ret := make([]interface{}, 0)
+	if err := mg.checkExist(tv); err != nil {
+		return ret, err
+	}
+	i := mg.indices[tv]
+	for j := 0; j < len(mg.matrix[i]); j++ {
+		if mg.matrix[i][j] > 0 {
+			ret = append(ret, mg.values[j])
+		}
+	}
+	return ret, nil
+}
+
+func (mg *MGraph) Transpose() Graph {
+	nm := make([][]int, len(mg.matrix))
+	for i := 0; i < len(mg.matrix); i++ {
+		nm[i] = make([]int, len(mg.matrix[i]))
+	}
+	for i := 0; i < len(mg.matrix); i++ {
+		for j := 0; j < len(mg.matrix[i]); j++ {
+			nm[i][j] = mg.matrix[j][i]
+		}
+	}
+
+	nmg := &MGraph{
+		nm,
+		mg.directed,
+		make([]interface{}, len(mg.values)),
+		make(map[interface{}]int, 0),
+	}
+	copy(nmg.values, mg.values)
+	for k, v := range mg.indices {
+		nmg.indices[k] = v
+	}
+	return nmg
+}
+
+func (mg *MGraph) Weight(sv, ev interface{}) (int, error) {
+	if err := mg.checkExist(sv); err != nil {
+		return -1, err
+	}
+	if err := mg.checkExist(ev); err != nil {
+		return -1, err
+	}
+	i, j := mg.indices[sv], mg.indices[ev]
+	return mg.matrix[i][j], nil
+}
+
+func (mg *MGraph) checkExist(tv interface{}) error {
+	if _, ok := mg.indices[tv]; !ok {
+		msg := fmt.Sprintf("ERROR: %v does not exist in graph", tv)
+		fmt.Println(msg)
+		return errors.New(msg)
+	}
+	return nil
+}
+
 func (mg *MGraph) String() string {
 	ret := fmt.Sprintf("========== Adjacent Matrix Graph ==========\n")
 	for i := 0; i < len(mg.matrix); i++ {
@@ -74,38 +132,4 @@ func (mg *MGraph) String() string {
 
 func (mg *MGraph) Nodes() []interface{} {
 	return mg.values
-}
-
-func (mg *MGraph) Adj(tv interface{}) ([]interface{}, error) {
-	ret := make([]interface{}, 0)
-	if err := mg.checkExist(tv); err != nil {
-		return ret, err
-	}
-	i := mg.indices[tv]
-	for j := 0; j < len(mg.matrix[i]); j++ {
-		if mg.matrix[i][j] > 0 {
-			ret = append(ret, mg.values[j])
-		}
-	}
-	return ret, nil
-}
-
-func (mg *MGraph) checkExist(tv interface{}) error {
-	if _, ok := mg.indices[tv]; !ok {
-		msg := fmt.Sprintf("ERROR: %v does not exist in graph", tv)
-		fmt.Println(msg)
-		return errors.New(msg)
-	}
-	return nil
-}
-
-func (mg *MGraph) Weight(sv, ev interface{}) (int, error) {
-	if err := mg.checkExist(sv); err != nil {
-		return -1, err
-	}
-	if err := mg.checkExist(ev); err != nil {
-		return -1, err
-	}
-	i, j := mg.indices[sv], mg.indices[ev]
-	return mg.matrix[i][j], nil
 }

@@ -104,7 +104,7 @@ func (g *LGraph) Adj(tv interface{}) ([]interface{}, error) {
 }
 
 // For Directed LGraph, return a new graph with every edge direction reverted
-func (g *LGraph) Transpose() *LGraph {
+func (g *LGraph) Transpose() Graph {
 	if !g.directed {
 		return g.Clone()
 	}

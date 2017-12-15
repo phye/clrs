@@ -16,6 +16,8 @@ type (
 		Adj(v interface{}) ([]interface{}, error)
 		// Return weight of edge (sv, ev)
 		Weight(sv, ev interface{}) (int, error)
+		// Return a new graph with all edges direction reverted
+		Transpose() Graph
 
 		fmt.Stringer
 	}
