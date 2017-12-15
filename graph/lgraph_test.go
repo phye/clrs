@@ -6,12 +6,12 @@ import (
 )
 
 func TestAddNode(t *testing.T) {
-	g := NewGraph(false)
+	g := NewListGraph(false)
 	g.AddNode(1)
 }
 
 func TestRemoveNode(t *testing.T) {
-	g := NewGraph(false)
+	g := NewListGraph(false)
 	g.AddNode(1)
 	g.AddNode(2)
 	g.AddNode(3)
@@ -31,7 +31,7 @@ func TestRemoveNode(t *testing.T) {
 }
 
 func TestGetNode(t *testing.T) {
-	g := NewGraph(false)
+	g := NewListGraph(false)
 	g.AddNode(5)
 	n := g.Node(5)
 	//fmt.Printf("%p\n", n)
@@ -41,7 +41,7 @@ func TestGetNode(t *testing.T) {
 }
 
 func TestAddEdge(t *testing.T) {
-	g := NewGraph(false)
+	g := NewListGraph(false)
 	g.AddNode(1)
 	g.AddNode(2)
 	g.AddNode(3)
@@ -72,7 +72,7 @@ func TestAddEdge(t *testing.T) {
 }
 
 func TestGetEdge(t *testing.T) {
-	g := NewGraph(false)
+	g := NewListGraph(false)
 	g.AddNode(1)
 	g.AddNode(2)
 	g.AddEdge(1, 2, 3)
@@ -83,7 +83,7 @@ func TestGetEdge(t *testing.T) {
 }
 
 func TestAdj(t *testing.T) {
-	g := NewGraph(false)
+	g := NewListGraph(false)
 	g.AddNode(1)
 	g.AddNode(2)
 	g.AddNode(3)
@@ -107,7 +107,7 @@ func TestAdj(t *testing.T) {
 	}
 }
 
-func TestDirectedGraph(t *testing.T) {
+func TestDirectedLGraph(t *testing.T) {
 	/*
 			1  -->      2  -->    7
 
@@ -116,7 +116,7 @@ func TestDirectedGraph(t *testing.T) {
 
 					    3   -->   8
 	*/
-	g := NewGraph(true)
+	g := NewListGraph(true)
 	g.AddNode(1)
 	g.AddNode(2)
 	g.AddNode(3)
@@ -150,7 +150,7 @@ func TestDirectedGraph(t *testing.T) {
 }
 
 func TestTranspose(t *testing.T) {
-	g := NewGraph(true)
+	g := NewListGraph(true)
 	g.AddNode(1)
 	g.AddNode(2)
 	g.AddNode(3)

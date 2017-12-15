@@ -78,6 +78,14 @@ func (g *LGraph) AddEdge(sv, ev interface{}, weight int) error {
 	return nil
 }
 
+func (g *LGraph) Nodes() []interface{} {
+	ret := make([]interface{}, len(g.nodes))
+	for i, n := range g.nodes {
+		ret[i] = n.value
+	}
+	return ret
+}
+
 func (g *LGraph) Adj(tv interface{}) ([]interface{}, error) {
 	ret := make([]interface{}, 0)
 	if err := g.checkExist(tv); err != nil {

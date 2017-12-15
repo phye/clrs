@@ -72,6 +72,10 @@ func (mg *MGraph) String() string {
 	return ret
 }
 
+func (mg *MGraph) Nodes() []interface{} {
+	return mg.values
+}
+
 func (mg *MGraph) Adj(tv interface{}) ([]interface{}, error) {
 	ret := make([]interface{}, 0)
 	if err := mg.checkExist(tv); err != nil {
