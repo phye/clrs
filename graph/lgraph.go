@@ -17,28 +17,28 @@ type (
 		end    *Node
 	}
 
-	Graph struct {
+	LGraph struct {
 		nodes    []*Node
 		directed bool
 	}
 )
 
-func NewGraph(directed bool) *Graph {
-	g := &Graph{
+func NewListGraph(directed bool) *LGraph {
+	g := &LGraph{
 		make([]*Node, 0),
 		directed,
 	}
 	return g
 }
 
-func (g *Graph) AddNode(v interface{}) {
+func (g *LGraph) AddNode(v interface{}) {
 	n := new(Node)
 	n.edges = make([]*Edge, 0)
 	n.value = v
 	g.nodes = append(g.nodes, n)
 }
 
-func (g *Graph) AddEdge(sv, ev interface{}, weight int) error {
+func (g *LGraph) AddEdge(sv, ev interface{}, weight int) error {
 	if err := g.checkExist(sv); err != nil {
 		return err
 	}
@@ -78,7 +78,7 @@ func (g *Graph) AddEdge(sv, ev interface{}, weight int) error {
 	return nil
 }
 
-func (g *Graph) Adj(tv interface{}) ([]interface{}, error) {
+func (g *LGraph) Adj(tv interface{}) ([]interface{}, error) {
 	ret := make([]interface{}, 0)
 	if err := g.checkExist(tv); err != nil {
 		return ret, err
@@ -95,12 +95,12 @@ func (g *Graph) Adj(tv interface{}) ([]interface{}, error) {
 	return ret, nil
 }
 
-// For Directed Graph, return a new graph with every edge direction reverted
-func (g *Graph) Transpose() *Graph {
+// For Directed LGraph, return a new graph with every edge direction reverted
+func (g *LGraph) Transpose() *LGraph {
 	if !g.directed {
 		return g.Clone()
 	}
-	ng := NewGraph(g.directed)
+	ng := NewListGraph(g.directed)
 	for _, n := range g.nodes {
 		ng.AddNode(n.value)
 	}
@@ -115,7 +115,7 @@ func (g *Graph) Transpose() *Graph {
 }
 
 // Return weight of edge (sv, ev), if edge doesnot exist, error will be nonnil
-func (g *Graph) Weight(sv, ev interface{}) (int, error) {
+func (g *LGraph) Weight(sv, ev interface{}) (int, error) {
 	if err := g.checkExist(sv); err != nil {
 		return -1, err
 	}
@@ -125,7 +125,7 @@ func (g *Graph) Weight(sv, ev interface{}) (int, error) {
 	return g.Edge(sv, ev).weight, nil
 }
 
-func (g *Graph) RemoveEdge(sv, ev interface{}) error {
+func (g *LGraph) RemoveEdge(sv, ev interface{}) error {
 	if err := g.checkExist(sv); err != nil {
 		return err
 	}
@@ -163,7 +163,7 @@ func (g *Graph) RemoveEdge(sv, ev interface{}) error {
 	return nil
 }
 
-func (g *Graph) RemoveNode(tv interface{}) error {
+func (g *LGraph) RemoveNode(tv interface{}) error {
 	if err := g.checkExist(tv); err != nil {
 		return err
 	}
@@ -194,8 +194,8 @@ func (g *Graph) RemoveNode(tv interface{}) error {
   Aux functions
 */
 
-// Return *Node (List Graph only) matching value v
-func (g *Graph) Node(v interface{}) *Node {
+// Return *Node (List LGraph only) matching value v
+func (g *LGraph) Node(v interface{}) *Node {
 	for _, n := range g.nodes {
 		if n.value == v {
 			return n
@@ -204,8 +204,8 @@ func (g *Graph) Node(v interface{}) *Node {
 	return nil
 }
 
-// Return *Edge (List Graph only) matching (sv, ev)
-func (g *Graph) Edge(sv, ev interface{}) *Edge {
+// Return *Edge (List LGraph only) matching (sv, ev)
+func (g *LGraph) Edge(sv, ev interface{}) *Edge {
 	var n1, n2 *Node
 	switch sv.(type) {
 	case *Node:
@@ -234,7 +234,7 @@ func (g *Graph) Edge(sv, ev interface{}) *Edge {
 }
 
 // check if value v exist in graph
-func (g *Graph) checkExist(v interface{}) error {
+func (g *LGraph) checkExist(v interface{}) error {
 	if g.Node(v) == nil {
 		msg := fmt.Sprintf("ERROR: %v does not exist in graph", v)
 		fmt.Println(msg)
@@ -243,8 +243,8 @@ func (g *Graph) checkExist(v interface{}) error {
 	return nil
 }
 
-// Adjacent List Graph Stringer
-func (g *Graph) String() string {
+// Adjacent List LGraph Stringer
+func (g *LGraph) String() string {
 	ret := "\n\n"
 	for _, n := range g.nodes {
 		ret += fmt.Sprintf("%-12v: \t", n.value)
@@ -263,8 +263,8 @@ func (g *Graph) String() string {
 	return ret
 }
 
-func (g *Graph) Clone() *Graph {
-	ng := NewGraph(g.directed)
+func (g *LGraph) Clone() *LGraph {
+	ng := NewListGraph(g.directed)
 	for _, n := range g.nodes {
 		ng.AddNode(n.value)
 	}
