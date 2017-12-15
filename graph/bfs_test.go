@@ -4,29 +4,56 @@ import (
 	"testing"
 )
 
-func TestBFS(test *testing.T) {
-	g := NewListGraph(false)
-	g.AddNode("r")
-	g.AddNode("s")
-	g.AddNode("t")
-	g.AddNode("u")
-	g.AddNode("v")
-	g.AddNode("w")
-	g.AddNode("x")
-	g.AddNode("y")
+func TestBFS(t *testing.T) {
+	lg := NewListGraph(false)
+	lg.AddNode("r")
+	lg.AddNode("s")
+	lg.AddNode("t")
+	lg.AddNode("u")
+	lg.AddNode("v")
+	lg.AddNode("w")
+	lg.AddNode("x")
+	lg.AddNode("y")
 
-	g.AddEdge("r", "v", 1)
-	g.AddEdge("r", "s", 1)
-	g.AddEdge("s", "w", 1)
-	g.AddEdge("w", "t", 1)
-	g.AddEdge("w", "x", 1)
-	g.AddEdge("t", "x", 1)
-	g.AddEdge("t", "u", 1)
-	g.AddEdge("x", "u", 1)
-	g.AddEdge("x", "y", 1)
-	g.AddEdge("u", "y", 1)
+	lg.AddEdge("r", "v", 1)
+	lg.AddEdge("r", "s", 1)
+	lg.AddEdge("s", "w", 1)
+	lg.AddEdge("w", "t", 1)
+	lg.AddEdge("w", "x", 1)
+	lg.AddEdge("t", "x", 1)
+	lg.AddEdge("t", "u", 1)
+	lg.AddEdge("x", "u", 1)
+	lg.AddEdge("x", "y", 1)
+	lg.AddEdge("u", "y", 1)
+	lbfs := BFS(lg, "s")
 
-	BFS(g, "s")
+	mg := NewMatrixGraph(false)
+	mg.AddNode("r")
+	mg.AddNode("s")
+	mg.AddNode("t")
+	mg.AddNode("u")
+	mg.AddNode("v")
+	mg.AddNode("w")
+	mg.AddNode("x")
+	mg.AddNode("y")
+
+	mg.AddEdge("r", "v", 1)
+	mg.AddEdge("r", "s", 1)
+	mg.AddEdge("s", "w", 1)
+	mg.AddEdge("w", "t", 1)
+	mg.AddEdge("w", "x", 1)
+	mg.AddEdge("t", "x", 1)
+	mg.AddEdge("t", "u", 1)
+	mg.AddEdge("x", "u", 1)
+	mg.AddEdge("x", "y", 1)
+	mg.AddEdge("u", "y", 1)
+	mbfs := BFS(mg, "s")
+
+	for v, s := range lbfs {
+		if s.d != mbfs[v].d || s.pi != mbfs[v].pi {
+			t.Fatalf("Incompatible BFS result!")
+		}
+	}
 }
 
 func TestPath(test *testing.T) {
