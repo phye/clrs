@@ -12,156 +12,161 @@ func TestAddNode(t *testing.T) {
 
 func TestRemoveNode(t *testing.T) {
 	g := NewGraph(false)
-	n1 := g.AddNode(1)
-	n2 := g.AddNode(2)
-	n3 := g.AddNode(3)
-	n4 := g.AddNode(4)
-	n5 := g.AddNode(5)
-	g.AddEdge(n1, n2, 1)
-	g.AddEdge(n1, n5, 1)
-	g.AddEdge(n2, n1, 1)
-	g.AddEdge(n2, n5, 1)
-	g.AddEdge(n2, n4, 1)
-	g.AddEdge(n2, n3, 1)
-	g.AddEdge(n3, n2, 1)
-	g.AddEdge(n3, n4, 1)
-	g.AddEdge(n4, n3, 1)
-	g.AddEdge(n4, n2, 1)
-	g.AddEdge(n4, n5, 1)
-	g.AddEdge(n5, n1, 1)
-	g.AddEdge(n5, n2, 1)
-	g.AddEdge(n5, n4, 1)
-	//fmt.Printf("%s", g)
-	g.RemoveNode(n2)
+	g.AddNode(1)
+	g.AddNode(2)
+	g.AddNode(3)
+	g.AddNode(4)
+	g.AddNode(5)
+	g.AddEdge(1, 2, 1)
+	g.AddEdge(1, 5, 1)
+	g.AddEdge(2, 3, 1)
+	g.AddEdge(2, 4, 1)
+	g.AddEdge(2, 5, 1)
+	g.AddEdge(3, 4, 1)
+	g.AddEdge(4, 5, 1)
+	g.RemoveNode(2)
+	if len(g.nodes) != 4 {
+		t.Fatalf("Node remove failed!")
+	}
 }
 
 func TestGetNode(t *testing.T) {
 	g := NewGraph(false)
-	n5 := g.AddNode(5)
+	g.AddNode(5)
 	n := g.Node(5)
 	//fmt.Printf("%p\n", n)
-	if n != n5 {
+	if n.value != 5 {
 		t.Fatal("g.Node incorrect ptr!")
 	}
 }
 
 func TestAddEdge(t *testing.T) {
 	g := NewGraph(false)
-	n1 := g.AddNode(1)
-	n2 := g.AddNode(2)
-	n3 := g.AddNode(3)
-	n4 := g.AddNode(4)
-	n5 := g.AddNode(5)
-	g.AddEdge(n1, n2, 1)
-	g.AddEdge(n1, n5, 1)
-	g.AddEdge(n2, n1, 1)
-	g.AddEdge(n2, n5, 1)
-	g.AddEdge(n2, n4, 1)
-	g.AddEdge(n2, n3, 1)
-	g.AddEdge(n3, n2, 1)
-	g.AddEdge(n3, n4, 1)
-	g.AddEdge(n4, n3, 1)
-	g.AddEdge(n4, n2, 1)
-	g.AddEdge(n4, n5, 1)
-	g.AddEdge(n5, n1, 1)
-	g.AddEdge(n5, n2, 1)
-	g.AddEdge(n5, n4, 1)
-	//fmt.Printf("%s", g)
+	g.AddNode(1)
+	g.AddNode(2)
+	g.AddNode(3)
+	g.AddNode(4)
+	g.AddNode(5)
+	if err := g.AddEdge(1, 2, 1); err != nil {
+		t.Fatalf(err.Error())
+	}
+	if err := g.AddEdge(1, 5, 1); err != nil {
+		t.Fatalf(err.Error())
+	}
+	if err := g.AddEdge(2, 5, 1); err != nil {
+		t.Fatalf(err.Error())
+	}
+	if err := g.AddEdge(2, 4, 1); err != nil {
+		t.Fatalf(err.Error())
+	}
+	if err := g.AddEdge(2, 3, 1); err != nil {
+		t.Fatalf(err.Error())
+	}
+	if err := g.AddEdge(3, 4, 1); err != nil {
+		t.Fatalf(err.Error())
+	}
+	// 6 does not exist
+	if err := g.AddEdge(4, 6, 1); err == nil {
+		t.Fatalf(err.Error())
+	}
 }
 
 func TestGetEdge(t *testing.T) {
 	g := NewGraph(false)
-	n1 := g.AddNode(1)
-	n2 := g.AddNode(2)
-	e12, _ := g.AddEdge(n1, n2, 3)
-	e := g.Edge(n1, n2)
-	if e != e12 {
+	g.AddNode(1)
+	g.AddNode(2)
+	g.AddEdge(1, 2, 3)
+	e := g.Edge(1, 2)
+	if e.weight != 3 {
 		t.Fatalf("Incorrect Edge method")
 	}
 }
 
 func TestAdj(t *testing.T) {
 	g := NewGraph(false)
-	n1 := g.AddNode(1)
-	n2 := g.AddNode(2)
-	n3 := g.AddNode(3)
-	n4 := g.AddNode(4)
-	n5 := g.AddNode(5)
-	g.AddEdge(n1, n2, 1)
-	g.AddEdge(n1, n5, 1)
-	g.AddEdge(n2, n1, 1)
-	g.AddEdge(n2, n5, 1)
-	g.AddEdge(n2, n4, 1)
-	g.AddEdge(n2, n3, 1)
-	g.AddEdge(n3, n2, 1)
-	g.AddEdge(n3, n4, 1)
-	g.AddEdge(n4, n3, 1)
-	g.AddEdge(n4, n2, 1)
-	g.AddEdge(n4, n5, 1)
-	g.AddEdge(n5, n1, 1)
-	g.AddEdge(n5, n2, 1)
-	g.AddEdge(n5, n4, 1)
+	g.AddNode(1)
+	g.AddNode(2)
+	g.AddNode(3)
+	g.AddNode(4)
+	g.AddNode(5)
+	g.AddEdge(1, 2, 1)
+	g.AddEdge(1, 5, 1)
+	g.AddEdge(2, 5, 1)
+	g.AddEdge(2, 4, 1)
+	g.AddEdge(2, 3, 1)
+	g.AddEdge(3, 4, 1)
+	g.AddEdge(4, 5, 1)
 
-	adj1 := g.Adj(n1)
-	adj2 := g.Adj(n2)
-	adj3 := g.Adj(n3)
-	adj4 := g.Adj(n4)
-	adj5 := g.Adj(n5)
+	adj1, _ := g.Adj(1)
+	adj2, _ := g.Adj(2)
+	adj3, _ := g.Adj(3)
+	adj4, _ := g.Adj(4)
+	adj5, _ := g.Adj(5)
 	if len(adj1) != 2 || len(adj2) != 4 || len(adj3) != 2 || len(adj4) != 3 || len(adj5) != 3 {
 		t.Fatalf("Incorrect adjacent nodes")
 	}
 }
 
 func TestDirectedGraph(t *testing.T) {
+	/*
+			1  -->      2  -->    7
+
+		      \         |    -/|
+		      _\|      \|/  /
+
+					    3   -->   8
+	*/
 	g := NewGraph(true)
-	n1 := g.AddNode(1)
-	n2 := g.AddNode(2)
-	n3 := g.AddNode(3)
-	n7 := g.AddNode(7)
-	n8 := g.AddNode(8)
-	g.AddEdge(n1, n2, 1)
-	g.AddEdge(n1, n3, 1)
-	g.AddEdge(n2, n3, 1)
-	g.AddEdge(n2, n7, 1)
-	g.AddEdge(n3, n7, 1)
-	g.AddEdge(n3, n8, 1)
-	adj1 := g.Adj(n1)
-	adj2 := g.Adj(n2)
-	adj3 := g.Adj(n3)
-	adj7 := g.Adj(n7)
-	adj8 := g.Adj(n8)
+	g.AddNode(1)
+	g.AddNode(2)
+	g.AddNode(3)
+	g.AddNode(7)
+	g.AddNode(8)
+	g.AddEdge(1, 2, 1)
+	g.AddEdge(1, 3, 1)
+	g.AddEdge(2, 3, 1)
+	g.AddEdge(2, 7, 1)
+	g.AddEdge(3, 7, 1)
+	g.AddEdge(3, 8, 1)
+	adj1, _ := g.Adj(1)
+	adj2, _ := g.Adj(2)
+	adj3, _ := g.Adj(3)
+	adj7, _ := g.Adj(7)
+	adj8, _ := g.Adj(8)
 	if len(adj1) != 2 || len(adj2) != 2 || len(adj3) != 2 || len(adj7) != 0 || len(adj8) != 0 {
 		t.Fatalf("Incorrect adjacent ndoes for directed graph")
 	}
 	fmt.Printf("%s", g)
-	g.RemoveNode(n3)
+	g.RemoveNode(3)
 	fmt.Printf("node 3 removed %s", g)
-	g.AddEdge(n8, n8, 1)
+	g.AddEdge(8, 8, 1)
 	fmt.Printf("%s", g)
-	g.RemoveEdge(n2, n7)
+	g.RemoveEdge(2, 7)
 	fmt.Printf("Edge (2,7) removed %s", g)
-	g.RemoveEdge(n2, n1)
+	if err := g.RemoveEdge(2, 1); err == nil {
+		t.Fatalf("Removing nonexising edge should return error")
+	}
 	fmt.Printf("After removing nil Edge (2,1) %s", g)
 }
 
 func TestTranspose(t *testing.T) {
 	g := NewGraph(true)
-	n1 := g.AddNode(1)
-	n2 := g.AddNode(2)
-	n3 := g.AddNode(3)
-	n7 := g.AddNode(7)
-	n8 := g.AddNode(8)
-	g.AddEdge(n1, n2, 1)
-	g.AddEdge(n1, n3, 1)
-	g.AddEdge(n2, n3, 1)
-	g.AddEdge(n2, n7, 1)
-	g.AddEdge(n3, n7, 1)
-	g.AddEdge(n3, n8, 1)
-	adj1 := g.Adj(n1)
-	adj2 := g.Adj(n2)
-	adj3 := g.Adj(n3)
-	adj7 := g.Adj(n7)
-	adj8 := g.Adj(n8)
+	g.AddNode(1)
+	g.AddNode(2)
+	g.AddNode(3)
+	g.AddNode(7)
+	g.AddNode(8)
+	g.AddEdge(1, 2, 1)
+	g.AddEdge(1, 3, 1)
+	g.AddEdge(2, 3, 1)
+	g.AddEdge(2, 7, 1)
+	g.AddEdge(3, 7, 1)
+	g.AddEdge(3, 8, 1)
+	adj1, _ := g.Adj(1)
+	adj2, _ := g.Adj(2)
+	adj3, _ := g.Adj(3)
+	adj7, _ := g.Adj(7)
+	adj8, _ := g.Adj(8)
 	if len(adj1) != 2 || len(adj2) != 2 || len(adj3) != 2 || len(adj7) != 0 || len(adj8) != 0 {
 		t.Fatalf("Incorrect adjacent ndoes for directed graph")
 	}

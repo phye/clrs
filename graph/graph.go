@@ -31,55 +31,46 @@ func NewGraph(directed bool) *Graph {
 	return g
 }
 
-func (g *Graph) AddNode(v interface{}) *Node {
+func (g *Graph) AddNode(v interface{}) {
 	n := new(Node)
 	n.edges = make([]*Edge, 0)
 	n.value = v
 	g.nodes = append(g.nodes, n)
-	return n
 }
 
-func (g *Graph) AddEdge(sv, ev interface{}, weight int) (*Edge, error) {
-	var sn, en *Node
-	switch sv.(type) {
-	case *Node:
-		sn = sv.(*Node)
-		en = ev.(*Node)
-	default:
-		sn = g.Node(sv)
-		en = g.Node(ev)
+func (g *Graph) checkExist(v interface{}) error {
+	if g.Node(v) == nil {
+		msg := fmt.Sprintf("ERROR: %v does not exist in graph", v)
+		fmt.Println(msg)
+		return errors.New(msg)
 	}
-	// Validate start node and end node
-	cnt := 0
-	for _, n := range g.nodes {
-		if n == sn {
-			cnt += 1
-		}
-		if n == en {
-			cnt += 1
-		}
+	return nil
+}
+
+func (g *Graph) AddEdge(sv, ev interface{}, weight int) error {
+	if err := g.checkExist(sv); err != nil {
+		return err
 	}
-	if cnt != 2 {
-		msg := "Node not found in graph"
-		fmt.Printf("%v\n", msg)
-		return nil, errors.New(msg)
+	if err := g.checkExist(ev); err != nil {
+		return err
 	}
+	sn, en := g.Node(sv), g.Node(ev)
 
 	// Validate existing edges
 	if g.directed {
 		for _, e := range sn.edges {
 			if e.end == en {
-				msg := "Edge already exist"
-				//fmt.Printf("%v\n", msg)
-				return e, errors.New(msg)
+				msg := fmt.Sprintf("ERROR: Edge (%v, %v) already exist", sv, ev)
+				fmt.Println(msg)
+				return errors.New(msg)
 			}
 		}
 	} else {
 		for _, e := range sn.edges {
 			if e.end == en || e.start == en {
-				msg := "Edge already exist"
-				//fmt.Printf("%v\n", msg)
-				return e, errors.New(msg)
+				msg := fmt.Sprintf("ERROR: Edge (%v, %v) already exist", sv, ev)
+				fmt.Println(msg)
+				return errors.New(msg)
 			}
 		}
 	}
@@ -93,14 +84,20 @@ func (g *Graph) AddEdge(sv, ev interface{}, weight int) (*Edge, error) {
 	if sn != en {
 		en.edges = append(en.edges, ne)
 	}
-	return ne, nil
+	return nil
 }
 
 func (g *Graph) RemoveEdge(sv, ev interface{}) error {
-	e := g.Edge(sv, ev)
-	if e == nil {
-		msg := "Nil edge"
-		fmt.Printf("Error: %s\n", msg)
+	if err := g.checkExist(sv); err != nil {
+		return err
+	}
+	if err := g.checkExist(ev); err != nil {
+		return err
+	}
+	var e *Edge
+	if e = g.Edge(sv, ev); e == nil {
+		msg := fmt.Sprintf("ERROR: Edge (%v, %v) does not exist", sv, ev)
+		fmt.Println(msg)
 		return errors.New(msg)
 	}
 
@@ -129,14 +126,10 @@ func (g *Graph) RemoveEdge(sv, ev interface{}) error {
 }
 
 func (g *Graph) RemoveNode(tv interface{}) error {
-	var t *Node
-	switch tv.(type) {
-	case *Node:
-		t = tv.(*Node)
-	default:
-		t = g.Node(tv)
+	if err := g.checkExist(tv); err != nil {
+		return err
 	}
-
+	t := g.Node(tv)
 	var n *Node
 	var idx int
 	for i, nd := range g.nodes {
@@ -146,16 +139,13 @@ func (g *Graph) RemoveNode(tv interface{}) error {
 			break
 		}
 	}
-	if n == nil {
-		return errors.New("Node not found in graph")
-	}
 
 	// NOTE: Do remember to avoid the remove while iterate range loop pitfall!
 	// If you do a for _, e := range n.edges { ... }, e will be pointed to some edge that's
 	// already deleted
 	for _ = range n.edges {
 		e := n.edges[0]
-		g.RemoveEdge(e.start, e.end)
+		g.RemoveEdge(e.start.value, e.end.value)
 		e = nil
 	}
 	g.nodes = append(g.nodes[:idx], g.nodes[idx+1:]...)
@@ -199,28 +189,21 @@ func (g *Graph) Edge(sv, ev interface{}) *Edge {
 	return nil
 }
 
-func (g *Graph) Adj(tv interface{}) []*Node {
-	var t *Node
-	switch tv.(type) {
-	case *Node:
-		t = tv.(*Node)
-	default:
-		t = g.Node(tv)
+func (g *Graph) Adj(tv interface{}) ([]interface{}, error) {
+	ret := make([]interface{}, 0)
+	if err := g.checkExist(tv); err != nil {
+		return ret, err
 	}
-	ret := []*Node{}
-	for _, n := range g.nodes {
-		if n == t {
-			for _, e := range n.edges {
-				if e.start == n {
-					ret = append(ret, e.end)
-				}
-				if !g.directed && e.start != n {
-					ret = append(ret, e.start)
-				}
-			}
+	n := g.Node(tv)
+	for _, e := range n.edges {
+		if e.start == n {
+			ret = append(ret, e.end.value)
+		}
+		if !g.directed && e.start != n {
+			ret = append(ret, e.start.value)
 		}
 	}
-	return ret
+	return ret, nil
 }
 
 func (g *Graph) String() string {
@@ -244,18 +227,18 @@ func (g *Graph) String() string {
 
 // For Directed Graph, return a new graph with every edge direction reverted
 func (g *Graph) Transpose() *Graph {
-	m := make(map[*Node]*Node, 0)
 	if !g.directed {
 		return g
 	}
 	ng := NewGraph(g.directed)
 	for _, n := range g.nodes {
-		nn := ng.AddNode(n.value)
-		m[n] = nn
+		ng.AddNode(n.value)
 	}
 	for _, n := range g.nodes {
 		for _, e := range n.edges {
-			ng.AddEdge(m[e.end], m[e.start], e.weight)
+			if e.start == n {
+				ng.AddEdge(e.end.value, e.start.value, e.weight)
+			}
 		}
 	}
 	return ng
