@@ -8,61 +8,57 @@ import (
 type (
 	DFSAux struct {
 		color int
-		pi    *Node
-		d     int // Time at which the node is discovered
-		f     int // Time at which the node is fully explored
+		NodeAux
+		f int // Time at which the node is fully explored
 	}
-	DFSStatus map[*Node]*DFSAux
-)
-
-var (
-	time int = 0
+	DFSStatus map[interface{}]*DFSAux
 )
 
 // DFS will update nodes to be sorted in topological order
-func (g *Graph) DFS() {
+func DFS(g Graph) []interface{} {
 	dfsStatus := make(DFSStatus, 0)
-	time = 0
+	time := 0
 	l := list.New()
-	for _, n := range g.nodes {
-		dfsStatus[n] = &DFSAux{WHITE, nil, INF, INF}
+	for _, n := range g.Nodes() {
+		dfsStatus[n] = &DFSAux{WHITE, NodeAux{nil, nil, INF}, INF}
 	}
-	for _, n := range g.nodes {
+	for _, n := range g.Nodes() {
 		if dfsStatus[n].color == WHITE {
-			g.dfsVisit(n, dfsStatus, l)
+			dfsVisit(g, n, dfsStatus, l, &time)
 		}
 	}
 	fmt.Printf("%s", dfsStatus)
 
-	g.nodes = g.restoreNodes(l)
-	return
-}
-
-func (g *Graph) restoreNodes(l *list.List) []*Node {
-	nodes := make([]*Node, l.Len())
-	i := 0
-	for e := l.Front(); e != nil; e = e.Next() {
-		n := e.Value.(*Node)
-		nodes[i] = n
-		i++
-	}
+	nodes := restoreNodes(l)
 	return nodes
 }
 
-func (g *Graph) dfsVisit(u *Node, dfsStatus DFSStatus, l *list.List) {
-	time++
-	dfsStatus[u].d = time
+func dfsVisit(g Graph, u interface{}, dfsStatus DFSStatus, l *list.List, pt *int) {
+	*pt++
+	dfsStatus[u].d = *pt
 	dfsStatus[u].color = GRAY
-	for _, v := range g.Adj(u) {
+	adjs, _ := g.Adj(u)
+	for _, v := range adjs {
 		if dfsStatus[v].color == WHITE {
 			dfsStatus[v].pi = u
-			g.dfsVisit(v, dfsStatus, l)
+			dfsVisit(g, v, dfsStatus, l, pt)
 		}
 	}
 	l.PushFront(u)
 	dfsStatus[u].color = BLACK
-	time++
-	dfsStatus[u].f = time
+	*pt++
+	dfsStatus[u].f = *pt
+}
+
+func restoreNodes(l *list.List) []interface{} {
+	nodes := make([]interface{}, l.Len())
+	i := 0
+	for e := l.Front(); e != nil; e = e.Next() {
+		n := e.Value
+		nodes[i] = n
+		i++
+	}
+	return nodes
 }
 
 // Stringer
@@ -72,9 +68,9 @@ func (dfss DFSStatus) String() string {
 	ret += fmt.Sprintf("%8s %8s %8s %8s\n", "current", "parent", "start", "finish")
 	for n, s := range dfss {
 		if s.pi != nil {
-			ret += fmt.Sprintf("%8v %8v %8v %8v\n", n.value, s.pi.value, s.d, s.f)
+			ret += fmt.Sprintf("%8v %8v %8v %8v\n", n, s.pi, s.d, s.f)
 		} else {
-			ret += fmt.Sprintf("%8v %8v %8v %8v\n", n.value, "nil", s.d, s.f)
+			ret += fmt.Sprintf("%8v %8v %8v %8v\n", n, "nil", s.d, s.f)
 		}
 	}
 	ret += fmt.Sprintf("-------------------------------------------\n")
@@ -82,34 +78,36 @@ func (dfss DFSStatus) String() string {
 }
 
 // In place topo sort the graph, after sort, all nodes will be stored in decreasing u.f order
-func (g *Graph) TopoSort() {
-	g.DFS()
-	return
+func TopoSort(g Graph) []interface{} {
+	nodes := DFS(g)
+	return nodes
 }
 
 // Divide graph into strongly connected components(subgraphs)
-func (g *Graph) Decomposition() []*Graph {
+func Decomposition(g Graph) []*Graph {
 	ret := []*Graph{}
-	g.DFS()
-	gt := g.Transpose()
+	/*
+		DFS(g)
+		gt := g.Transpose()
 
-	dfsStatus := make(DFSStatus, 0)
-	time = 0
-	l := list.New()
-	for _, n := range gt.nodes {
-		dfsStatus[n] = &DFSAux{WHITE, nil, INF, INF}
-	}
-	for _, n := range gt.nodes {
-		if dfsStatus[n].color == WHITE {
-			ng := NewGraph(g.directed)
-			olh := l.Front()
-			gt.dfsVisit(n, dfsStatus, l)
-			for e := l.Front(); e != olh; e = e.Next() {
-				n := e.Value.(*Node)
-				ng.nodes = append(ng.nodes, n)
-			}
-			ret = append(ret, ng)
+		dfsStatus := make(DFSStatus, 0)
+		time = 0
+		l := list.New()
+		for _, n := range gt.Nodes() {
+			dfsStatus[n] = &DFSAux{WHITE, NodeAux{nil, nil, INF}, INF}
 		}
-	}
+		for _, n := range gt.Nodes() {
+			if dfsStatus[n].color == WHITE {
+				ng := NewGraph(g.directed)
+				olh := l.Front()
+				gt.dfsVisit(n, dfsStatus, l)
+				for e := l.Front(); e != olh; e = e.Next() {
+					n := e.Value
+					ng.nodes = append(ng.nodes, n)
+				}
+				ret = append(ret, ng)
+			}
+		}
+	*/
 	return ret
 }
