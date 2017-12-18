@@ -122,7 +122,11 @@ func (g *LGraph) Weight(sv, ev interface{}) (int, error) {
 	if err := g.checkExist(ev); err != nil {
 		return -1, err
 	}
-	return g.Edge(sv, ev).weight, nil
+	e := g.Edge(sv, ev)
+	if e == nil {
+		return -1, errors.New("Nil edge")
+	}
+	return e.weight, nil
 }
 
 func (g *LGraph) Directed() bool {
