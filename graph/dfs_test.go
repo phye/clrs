@@ -27,7 +27,8 @@ func TestDFS(test *testing.T) {
 	g.AddEdge("x", "y", 1)
 	g.AddEdge("u", "y", 1)
 
-	DFS(g)
+	dfs := DFS(g)
+	fmt.Printf("The DFS result is %v\n", dfs)
 }
 
 func TestDFSDirected(test *testing.T) {

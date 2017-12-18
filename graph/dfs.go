@@ -1,7 +1,6 @@
 package graph
 
 import (
-	"container/list"
 	"fmt"
 )
 
@@ -14,26 +13,23 @@ type (
 	DFSStatus map[interface{}]*DFSAux
 )
 
-// DFS will update nodes to be sorted in topological order
+// Return all nodes in Depth-First Order
 func DFS(g Graph) []interface{} {
 	dfsStatus := make(DFSStatus, 0)
 	time := 0
-	l := list.New()
+	ret := make([]interface{}, 0)
 	for _, n := range g.Nodes() {
 		dfsStatus[n] = &DFSAux{WHITE, NodeAux{nil, nil, INF}, INF}
 	}
 	for _, n := range g.Nodes() {
 		if dfsStatus[n].color == WHITE {
-			dfsVisit(g, n, dfsStatus, l, &time)
+			dfsVisit(g, n, dfsStatus, &ret, &time)
 		}
 	}
-	fmt.Printf("%s", dfsStatus)
-
-	nodes := restoreNodes(l)
-	return nodes
+	return ret
 }
 
-func dfsVisit(g Graph, u interface{}, dfsStatus DFSStatus, l *list.List, pt *int) {
+func dfsVisit(g Graph, u interface{}, dfsStatus DFSStatus, res *[]interface{}, pt *int) {
 	*pt++
 	dfsStatus[u].d = *pt
 	dfsStatus[u].color = GRAY
@@ -41,27 +37,16 @@ func dfsVisit(g Graph, u interface{}, dfsStatus DFSStatus, l *list.List, pt *int
 	for _, v := range adjs {
 		if dfsStatus[v].color == WHITE {
 			dfsStatus[v].pi = u
-			dfsVisit(g, v, dfsStatus, l, pt)
+			dfsVisit(g, v, dfsStatus, res, pt)
 		}
 	}
-	l.PushFront(u)
+	*res = append([]interface{}{u}, *res...)
 	dfsStatus[u].color = BLACK
 	*pt++
 	dfsStatus[u].f = *pt
 }
 
-func restoreNodes(l *list.List) []interface{} {
-	nodes := make([]interface{}, l.Len())
-	i := 0
-	for e := l.Front(); e != nil; e = e.Next() {
-		n := e.Value
-		nodes[i] = n
-		i++
-	}
-	return nodes
-}
-
-// Stringer
+// Stringer of DFSStatus
 func (dfss DFSStatus) String() string {
 	var ret string
 	ret += fmt.Sprintf("--------------------DFS--------------------\n")
