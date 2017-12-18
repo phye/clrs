@@ -5,7 +5,7 @@ import (
 )
 
 func TestBFS(t *testing.T) {
-	lg := NewListGraph(false)
+	lg := NewGraph(false, LISTGRAPH)
 	lg.AddNode("r")
 	lg.AddNode("s")
 	lg.AddNode("t")
@@ -27,7 +27,7 @@ func TestBFS(t *testing.T) {
 	lg.AddEdge("u", "y", 1)
 	lbfs := BFS(lg, "s")
 
-	mg := NewMatrixGraph(false)
+	mg := NewGraph(false, MATRIXGRAPH)
 	mg.AddNode("r")
 	mg.AddNode("s")
 	mg.AddNode("t")
@@ -57,7 +57,7 @@ func TestBFS(t *testing.T) {
 }
 
 func TestPath(test *testing.T) {
-	g := NewListGraph(false)
+	g := NewGraph(false, LISTGRAPH)
 	g.AddNode(1)
 	g.AddNode(2)
 	g.AddNode(3)

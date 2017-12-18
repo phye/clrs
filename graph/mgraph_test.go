@@ -6,7 +6,7 @@ import (
 )
 
 func TestMGraphBasic(t *testing.T) {
-	g := NewMatrixGraph(false)
+	g := NewGraph(false, MATRIXGRAPH)
 	g.AddNode(1)
 	g.AddNode(2)
 	g.AddNode(3)
@@ -35,7 +35,7 @@ func TestMGraphBasic(t *testing.T) {
 }
 
 func TestDirectedMGraph(t *testing.T) {
-	g := NewMatrixGraph(true)
+	g := NewGraph(true, MATRIXGRAPH)
 	g.AddNode(1)
 	g.AddNode(2)
 	g.AddNode(3)

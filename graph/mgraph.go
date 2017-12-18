@@ -14,16 +14,6 @@ type (
 	}
 )
 
-func NewMatrixGraph(directed bool) *MGraph {
-	mg := &MGraph{
-		make([][]int, 0),
-		directed,
-		make([]interface{}, 0),
-		make(map[interface{}]int),
-	}
-	return mg
-}
-
 // Do note that v must be comparable
 func (mg *MGraph) AddNode(v interface{}) {
 	ol := len(mg.matrix)
@@ -65,6 +55,9 @@ func (mg *MGraph) Adj(tv interface{}) ([]interface{}, error) {
 }
 
 func (mg *MGraph) Transpose() Graph {
+	if !mg.directed {
+		return mg.Clone()
+	}
 	nm := make([][]int, len(mg.matrix))
 	for i := 0; i < len(mg.matrix); i++ {
 		nm[i] = make([]int, len(mg.matrix[i]))
@@ -132,4 +125,30 @@ func (mg *MGraph) String() string {
 
 func (mg *MGraph) Nodes() []interface{} {
 	return mg.values
+}
+
+func (mg *MGraph) Clone() Graph {
+	nm := make([][]int, len(mg.matrix))
+	for i := 0; i < len(mg.matrix); i++ {
+		nm[i] = make([]int, len(mg.matrix[i]))
+	}
+	for i := 0; i < len(mg.matrix); i++ {
+		copy(nm[i], mg.matrix[i])
+	}
+
+	nmg := &MGraph{
+		nm,
+		mg.directed,
+		make([]interface{}, len(mg.values)),
+		make(map[interface{}]int, 0),
+	}
+	copy(nmg.values, mg.values)
+	for k, v := range mg.indices {
+		nmg.indices[k] = v
+	}
+	return nmg
+}
+
+func (mg *MGraph) GraphType() GType {
+	return MATRIXGRAPH
 }

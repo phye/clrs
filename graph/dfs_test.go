@@ -6,7 +6,7 @@ import (
 )
 
 func TestDFS(test *testing.T) {
-	g := NewListGraph(false)
+	g := NewGraph(false, LISTGRAPH)
 	g.AddNode("r")
 	g.AddNode("s")
 	g.AddNode("t")
@@ -32,7 +32,7 @@ func TestDFS(test *testing.T) {
 }
 
 func TestDFSDirected(test *testing.T) {
-	g := NewListGraph(true)
+	g := NewGraph(true, LISTGRAPH)
 	g.AddNode(1)
 	g.AddNode(2)
 	g.AddNode(3)
@@ -50,7 +50,7 @@ func TestDFSDirected(test *testing.T) {
 }
 
 func TestDFSDirectedNotConnected(test *testing.T) {
-	g := NewListGraph(true)
+	g := NewGraph(true, LISTGRAPH)
 	g.AddNode(2)
 	g.AddNode(3)
 	g.AddNode(7)
@@ -67,7 +67,7 @@ func TestDFSDirectedNotConnected(test *testing.T) {
 }
 
 func TestTopoSort(test *testing.T) {
-	g := NewListGraph(true)
+	g := NewGraph(true, LISTGRAPH)
 	g.AddNode("shirt")
 	g.AddNode("tie")
 	g.AddNode("jacket")
@@ -94,7 +94,7 @@ func TestTopoSort(test *testing.T) {
 
 /*
 func TestDecomposition(test *testing.T) {
-	gh := NewListGraph(true)
+	gh := NewGraph(true, LISTGRAPH)
 	a := gh.AddNode("a")
 	b := gh.AddNode("b")
 	c := gh.AddNode("c")

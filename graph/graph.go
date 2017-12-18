@@ -18,6 +18,10 @@ type (
 		Weight(sv, ev interface{}) (int, error)
 		// Return a new graph with all edges direction reverted
 		Transpose() Graph
+		// Return a deep copy of the original graph
+		Clone() Graph
+		// Return graph type. FIXME: May not be necessary with support of reflection
+		GraphType() GType
 
 		fmt.Stringer
 	}
@@ -27,4 +31,30 @@ type (
 		pi interface{} // Value of parent node, follow the π notation in CLRS
 		d  int         // Depth in BFS, Start time in DFS, path weight estimation in SSSP(Both Bellman-Ford and Dijkstra)
 	}
+
+	GType int // Graph type
 )
+
+const (
+	LISTGRAPH GType = iota
+	MATRIXGRAPH
+)
+
+func NewGraph(directed bool, gt GType) Graph {
+	var g Graph
+	switch gt {
+	case LISTGRAPH:
+		g = &LGraph{
+			make([]*Node, 0),
+			directed,
+		}
+	case MATRIXGRAPH:
+		g = &MGraph{
+			make([][]int, 0),
+			directed,
+			make([]interface{}, 0),
+			make(map[interface{}]int),
+		}
+	}
+	return g
+}

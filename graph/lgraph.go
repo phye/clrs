@@ -23,14 +23,6 @@ type (
 	}
 )
 
-func NewListGraph(directed bool) *LGraph {
-	g := &LGraph{
-		make([]*Node, 0),
-		directed,
-	}
-	return g
-}
-
 func (g *LGraph) AddNode(v interface{}) {
 	n := new(Node)
 	n.edges = make([]*Edge, 0)
@@ -108,7 +100,7 @@ func (g *LGraph) Transpose() Graph {
 	if !g.directed {
 		return g.Clone()
 	}
-	ng := NewListGraph(g.directed)
+	ng := NewGraph(g.directed, LISTGRAPH)
 	for _, n := range g.nodes {
 		ng.AddNode(n.value)
 	}
@@ -131,6 +123,10 @@ func (g *LGraph) Weight(sv, ev interface{}) (int, error) {
 		return -1, err
 	}
 	return g.Edge(sv, ev).weight, nil
+}
+
+func (g *LGraph) GraphType() GType {
+	return LISTGRAPH
 }
 
 func (g *LGraph) RemoveEdge(sv, ev interface{}) error {
@@ -271,8 +267,8 @@ func (g *LGraph) String() string {
 	return ret
 }
 
-func (g *LGraph) Clone() *LGraph {
-	ng := NewListGraph(g.directed)
+func (g *LGraph) Clone() Graph {
+	ng := NewGraph(g.directed, LISTGRAPH)
 	for _, n := range g.nodes {
 		ng.AddNode(n.value)
 	}

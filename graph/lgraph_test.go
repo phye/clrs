@@ -6,12 +6,13 @@ import (
 )
 
 func TestAddNode(t *testing.T) {
-	g := NewListGraph(false)
+	g := NewGraph(false, LISTGRAPH)
 	g.AddNode(1)
 }
 
 func TestRemoveNode(t *testing.T) {
-	g := NewListGraph(false)
+	gi := NewGraph(false, LISTGRAPH)
+	g := gi.(*LGraph)
 	g.AddNode(1)
 	g.AddNode(2)
 	g.AddNode(3)
@@ -31,7 +32,8 @@ func TestRemoveNode(t *testing.T) {
 }
 
 func TestGetNode(t *testing.T) {
-	g := NewListGraph(false)
+	gi := NewGraph(false, LISTGRAPH)
+	g := gi.(*LGraph)
 	g.AddNode(5)
 	n := g.Node(5)
 	//fmt.Printf("%p\n", n)
@@ -41,7 +43,7 @@ func TestGetNode(t *testing.T) {
 }
 
 func TestAddEdge(t *testing.T) {
-	g := NewListGraph(false)
+	g := NewGraph(false, LISTGRAPH)
 	g.AddNode(1)
 	g.AddNode(2)
 	g.AddNode(3)
@@ -72,7 +74,8 @@ func TestAddEdge(t *testing.T) {
 }
 
 func TestGetEdge(t *testing.T) {
-	g := NewListGraph(false)
+	gi := NewGraph(false, LISTGRAPH)
+	g := gi.(*LGraph)
 	g.AddNode(1)
 	g.AddNode(2)
 	g.AddEdge(1, 2, 3)
@@ -83,7 +86,7 @@ func TestGetEdge(t *testing.T) {
 }
 
 func TestAdj(t *testing.T) {
-	g := NewListGraph(false)
+	g := NewGraph(false, LISTGRAPH)
 	g.AddNode(1)
 	g.AddNode(2)
 	g.AddNode(3)
@@ -116,7 +119,8 @@ func TestDirectedLGraph(t *testing.T) {
 
 					    3   -->   8
 	*/
-	g := NewListGraph(true)
+	gi := NewGraph(true, LISTGRAPH)
+	g := gi.(*LGraph)
 	g.AddNode(1)
 	g.AddNode(2)
 	g.AddNode(3)
@@ -150,7 +154,7 @@ func TestDirectedLGraph(t *testing.T) {
 }
 
 func TestTranspose(t *testing.T) {
-	g := NewListGraph(true)
+	g := NewGraph(true, LISTGRAPH)
 	g.AddNode(1)
 	g.AddNode(2)
 	g.AddNode(3)
