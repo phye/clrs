@@ -152,3 +152,7 @@ func (mg *MGraph) Clone() Graph {
 func (mg *MGraph) GraphType() GType {
 	return MATRIXGRAPH
 }
+
+func (mg *MGraph) Directed() bool {
+	return mg.directed
+}

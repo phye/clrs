@@ -125,6 +125,10 @@ func (g *LGraph) Weight(sv, ev interface{}) (int, error) {
 	return g.Edge(sv, ev).weight, nil
 }
 
+func (g *LGraph) Directed() bool {
+	return g.directed
+}
+
 func (g *LGraph) GraphType() GType {
 	return LISTGRAPH
 }

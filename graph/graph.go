@@ -22,6 +22,8 @@ type (
 		Clone() Graph
 		// Return graph type. FIXME: May not be necessary with support of reflection
 		GraphType() GType
+		// Is the graph directed
+		Directed() bool
 
 		fmt.Stringer
 	}
