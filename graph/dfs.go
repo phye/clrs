@@ -63,9 +63,10 @@ func (dfss DFSStatus) String() string {
 }
 
 // In place topo sort the graph, after sort, all nodes will be stored in decreasing u.f order
-func TopoSort(g Graph) []interface{} {
+func TopoSort(g Graph) Graph {
 	nodes := DFS(g)
-	return nodes
+	ng := SubGraph(g, nodes)
+	return ng
 }
 
 // Divide graph into strongly connected components(subgraphs)

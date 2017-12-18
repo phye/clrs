@@ -60,3 +60,21 @@ func NewGraph(directed bool, gt GType) Graph {
 	}
 	return g
 }
+
+// Given Graph g and nodes of subsets, return a new graph with the corresponding edges in the
+// original graph
+func SubGraph(g Graph, nodes []interface{}) Graph {
+	ng := NewGraph(g.Directed(), g.GraphType())
+	for _, n := range nodes {
+		ng.AddNode(n)
+	}
+	for _, u := range nodes {
+		adjs, _ := g.Adj(u)
+		for _, v := range adjs {
+			// FIXME: Need to check if v is in nodes?
+			wt, _ := g.Weight(u, v)
+			ng.AddEdge(u, v, wt)
+		}
+	}
+	return ng
+}
