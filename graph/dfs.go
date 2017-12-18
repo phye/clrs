@@ -2,13 +2,14 @@ package graph
 
 import (
 	"fmt"
+	//"reflect"
 )
 
 type (
 	DFSAux struct {
 		color int
+		f     int // Time at which the node is fully explored
 		NodeAux
-		f int // Time at which the node is fully explored
 	}
 	DFSStatus map[interface{}]*DFSAux
 )
@@ -19,7 +20,7 @@ func DFS(g Graph) []interface{} {
 	time := 0
 	ret := make([]interface{}, 0)
 	for _, n := range g.Nodes() {
-		dfsStatus[n] = &DFSAux{WHITE, NodeAux{nil, nil, INF}, INF}
+		dfsStatus[n] = &DFSAux{WHITE, INF, NodeAux{nil, nil, INF}}
 	}
 	for _, n := range g.Nodes() {
 		if dfsStatus[n].color == WHITE {
@@ -70,30 +71,23 @@ func TopoSort(g Graph) Graph {
 }
 
 // Divide graph into strongly connected components(subgraphs)
-func Decomposition(g Graph) []*Graph {
-	ret := []*Graph{}
-	/*
-		DFS(g)
-		gt := g.Transpose()
+func Decomposition(g Graph) []Graph {
+	ret := []Graph{}
+	sg := TopoSort(g)
+	gt := sg.Transpose()
 
-		dfsStatus := make(DFSStatus, 0)
-		time = 0
-		l := list.New()
-		for _, n := range gt.Nodes() {
-			dfsStatus[n] = &DFSAux{WHITE, NodeAux{nil, nil, INF}, INF}
+	dfsStatus := make(DFSStatus, 0)
+	time := 0
+	for _, n := range gt.Nodes() {
+		dfsStatus[n] = &DFSAux{WHITE, INF, NodeAux{nil, nil, INF}}
+	}
+	for _, n := range gt.Nodes() {
+		if dfsStatus[n].color == WHITE {
+			dret := make([]interface{}, 0)
+			dfsVisit(gt, n, dfsStatus, &dret, &time)
+			ng := SubGraph(gt, dret)
+			ret = append(ret, ng)
 		}
-		for _, n := range gt.Nodes() {
-			if dfsStatus[n].color == WHITE {
-				ng := NewGraph(g.directed)
-				olh := l.Front()
-				gt.dfsVisit(n, dfsStatus, l)
-				for e := l.Front(); e != olh; e = e.Next() {
-					n := e.Value
-					ng.nodes = append(ng.nodes, n)
-				}
-				ret = append(ret, ng)
-			}
-		}
-	*/
+	}
 	return ret
 }
