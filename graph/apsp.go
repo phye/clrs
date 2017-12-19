@@ -49,3 +49,23 @@ func displayMatrix(m [][]int) {
 	}
 	fmt.Printf("------------------------------\n")
 }
+
+func (mg *MGraph) FasterAllPairsShortestPaths() [][]int {
+	n := len(mg.matrix)
+	Ls := make([][][]int, n)
+	Ls[1] = mg.matrix
+	m := 1
+	for {
+		if m >= n-1 {
+			break
+		}
+		L := extendShortestPaths(Ls[m], Ls[m])
+		if 2*m > n {
+			Ls = append(Ls, L)
+		} else {
+			Ls[2*m] = L
+		}
+		m = 2 * m
+	}
+	return Ls[len(Ls)-1]
+}

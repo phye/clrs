@@ -25,6 +25,10 @@ func TestSlowAllPairsShortestPaths(test *testing.T) {
 	mg.AddEdge(5, 4, 6)
 
 	res := mg.SlowAllPairsShortestPaths()
-	fmt.Printf("All Pairs Shortest Paths matrix is :\n")
+	fmt.Printf("Slow All Pairs Shortest Paths matrix is :\n")
 	displayMatrix(res)
+
+	res2 := mg.FasterAllPairsShortestPaths()
+	fmt.Printf("Faster All Pairs Shortest Paths matrix is :\n")
+	displayMatrix(res2)
 }
