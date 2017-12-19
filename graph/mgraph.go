@@ -51,7 +51,7 @@ func (mg *MGraph) Adj(tv interface{}) ([]interface{}, error) {
 	}
 	i := mg.indices[tv]
 	for j := 0; j < len(mg.matrix[i]); j++ {
-		if mg.matrix[i][j] > 0 {
+		if mg.matrix[i][j] > 0 && mg.matrix[i][j] < INF {
 			ret = append(ret, mg.values[j])
 		}
 	}
