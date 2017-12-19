@@ -23,6 +23,7 @@ const (
 )
 
 // Perform Bread-First-Search on Graph g and return the result in BFSStatus
+// in O(V+E) time
 func BFS(g Graph, s interface{}) BFSStatus {
 	bfsStatus := make(BFSStatus, 0)
 	for _, n := range g.Nodes() {

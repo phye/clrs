@@ -14,7 +14,7 @@ type (
 	DFSStatus map[interface{}]*DFSAux
 )
 
-// Return all nodes in Depth-First Order
+// Return all nodes in Depth-First Order in O(V+E) time
 func DFS(g Graph) []interface{} {
 	dfsStatus := make(DFSStatus, 0)
 	time := 0

@@ -13,7 +13,7 @@ type (
 	PRIMStatus map[interface{}]*PRIMAux
 )
 
-// Return an MST graph constructed via PRIM algorithm
+// Return an MST graph constructed via PRIM algorithm in O(ElgV) time (with Binary Heap for Q)
 func PrimMST(g Graph, r interface{}) Graph {
 	ng := NewGraph(g.Directed(), g.GraphType())
 
