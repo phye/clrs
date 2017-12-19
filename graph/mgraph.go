@@ -18,9 +18,13 @@ type (
 func (mg *MGraph) AddNode(v interface{}) {
 	ol := len(mg.matrix)
 	for i := 0; i < ol; i++ {
-		mg.matrix[i] = append(mg.matrix[i], 0)
+		mg.matrix[i] = append(mg.matrix[i], INF)
 	}
 	mg.matrix = append(mg.matrix, make([]int, ol+1))
+	for j := 0; j < ol+1; j++ {
+		mg.matrix[ol][j] = INF
+	}
+	mg.matrix[ol][ol] = 0
 	mg.values = append(mg.values, v)
 	mg.indices[v] = ol
 }
@@ -102,7 +106,7 @@ func (mg *MGraph) checkExist(tv interface{}) error {
 }
 
 func (mg *MGraph) String() string {
-	ret := fmt.Sprintf("========== Adjacent Matrix Graph ==========\n")
+	ret := fmt.Sprintf("\n\t========== Adjacent Matrix Graph ==========\n")
 	for i := 0; i < len(mg.matrix); i++ {
 		if i == 0 {
 			ret += fmt.Sprintf("%8v ", "")
@@ -115,11 +119,11 @@ func (mg *MGraph) String() string {
 			if j == 0 {
 				ret += fmt.Sprintf("%8v ", mg.values[i])
 			}
-			ret += fmt.Sprintf("%8v ", mg.matrix[i][j])
+			ret += fmt.Sprintf("%8x ", mg.matrix[i][j])
 		}
 		ret += fmt.Sprintf("\n")
 	}
-	ret += fmt.Sprintf("===========================================\n")
+	ret += fmt.Sprintf("\t===========================================\n")
 	return ret
 }
 
