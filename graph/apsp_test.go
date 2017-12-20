@@ -31,4 +31,8 @@ func TestSlowAllPairsShortestPaths(test *testing.T) {
 	res2 := mg.FasterAllPairsShortestPaths()
 	fmt.Printf("Faster All Pairs Shortest Paths matrix is :\n")
 	displayMatrix(res2)
+
+	res3 := mg.FloydWarshall()
+	fmt.Printf("All Pairs Shortest Paths matrix via FloydWarshall is :\n")
+	displayMatrix(res3)
 }

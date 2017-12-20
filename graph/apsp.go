@@ -27,6 +27,7 @@ func extendShortestPaths(L, W [][]int) [][]int {
 	return ret
 }
 
+// Return All Pairs Shortest Paths via Slow Matrix Mulplication similar algo in O(V^4)
 func (mg *MGraph) SlowAllPairsShortestPaths() [][]int {
 	n := len(mg.matrix)
 	Ls := make([][][]int, n)
@@ -50,6 +51,7 @@ func displayMatrix(m [][]int) {
 	fmt.Printf("------------------------------\n")
 }
 
+// Return All Pairs Shortest Paths via Faster Matrix Mulplication similar algo in O(V^3lgV)
 func (mg *MGraph) FasterAllPairsShortestPaths() [][]int {
 	n := len(mg.matrix)
 	Ls := make([][][]int, n)
@@ -68,4 +70,24 @@ func (mg *MGraph) FasterAllPairsShortestPaths() [][]int {
 		m = 2 * m
 	}
 	return Ls[len(Ls)-1]
+}
+
+// Return All Pair Shortest Paths via FloydWarshall algorithm which runs in O(V^3)
+func (mg *MGraph) FloydWarshall() [][]int {
+	n := len(mg.matrix)
+	Ds := make([][][]int, n+1)
+	Ds[0] = mg.matrix
+	// Note that k represents # of intermediate nodes
+	for k := 1; k <= n; k++ {
+		Ds[k] = make([][]int, n)
+		for i := 0; i < n; i++ {
+			Ds[k][i] = make([]int, n)
+			for j := 0; j < n; j++ {
+				// Note the k-1 in Ds[k-1][i][k-1], the first k-1 means # of intermediate nodes is
+				// k-1, the latter k-1 is the index of last node of the k nodes in (0,1,..k-1)
+				Ds[k][i][j] = min(Ds[k-1][i][j], Ds[k-1][i][k-1]+Ds[k-1][k-1][j])
+			}
+		}
+	}
+	return Ds[n]
 }
