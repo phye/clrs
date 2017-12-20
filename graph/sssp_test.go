@@ -74,4 +74,27 @@ func TestDijkstra(test *testing.T) {
 
 	ng := Dijkstra(g, "s")
 	fmt.Printf("SSSP via Dijkstra is %s\n", ng)
+
+	mg := NewGraph(true, MATRIXGRAPH)
+
+	mg.AddNode("x")
+	mg.AddNode("t")
+	mg.AddNode("y")
+	mg.AddNode("s")
+	mg.AddNode("z")
+
+	mg.AddEdge("s", "t", 10)
+	mg.AddEdge("s", "y", 5)
+	mg.AddEdge("t", "y", 2)
+	mg.AddEdge("t", "x", 1)
+	mg.AddEdge("x", "z", 4)
+	mg.AddEdge("y", "t", 3)
+	mg.AddEdge("y", "x", 9)
+	mg.AddEdge("y", "z", 2)
+	mg.AddEdge("z", "s", 2)
+	mg.AddEdge("z", "x", 6)
+
+	mng := Dijkstra(mg, "s")
+	fmt.Printf("SSSP via Dijkstra of matrix graph is %s\n", mng)
+
 }
