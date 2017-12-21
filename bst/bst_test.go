@@ -53,8 +53,8 @@ func TestMinMax(t *testing.T) {
 	bst.Insert(8)
 
 	fmt.Printf("%s", bst)
-	min := bst.Minimum()
-	max := bst.Maximum()
+	min := bst.Minimum(bst.Root)
+	max := bst.Maximum(bst.Root)
 	if min.Value != 2 {
 		t.Fatalf("Tree Minimum Error")
 	}
@@ -65,8 +65,8 @@ func TestMinMax(t *testing.T) {
 	fmt.Printf("Maximum in tree is %v\n", max)
 
 	nbst := NewBST(numCompare)
-	nmin := nbst.Minimum()
-	nmax := nbst.Maximum()
+	nmin := nbst.Minimum(nbst.Root)
+	nmax := nbst.Maximum(nbst.Root)
 	if nmin != nil {
 		t.Fatalf("Empty Tree Minimum Error")
 	}
@@ -104,7 +104,26 @@ func TestPredessor(t *testing.T) {
 	p2 := bst.Predessor(85)
 	p3 := bst.Predessor(86)
 	p4 := bst.Predessor(40)
-	if p1.Value != 86 || p2.Value != 80 || p3.Value != 85 || p4 != nil {
+	p5 := bst.Predessor(100)
+	if p1.Value != 86 || p2.Value != 80 || p3.Value != 85 || p4 != nil || p5.Value != 93 {
 		t.Fatalf("Error in BST Predessor")
 	}
+}
+
+func TestDelete(t *testing.T) {
+	bst := NewBST(numCompare)
+	nums := []int{100, 80, 120, 50, 90, 110, 40, 70, 85, 93, 86, 92}
+	for i := 0; i < len(nums); i++ {
+		bst.Insert(nums[i])
+	}
+
+	if _, err := bst.Delete(77); err == nil {
+		t.Fatalf("Delete non existing node should result in failure")
+	}
+
+	n1, _ := bst.Delete(90)
+	fmt.Printf("After delete %v, bst is %s", n1.Value, bst)
+
+	n2, _ := bst.Delete(100)
+	fmt.Printf("After delete %v, bst is %s", n2.Value, bst)
 }

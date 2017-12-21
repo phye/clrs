@@ -1,6 +1,7 @@
 package bst
 
 import (
+	"errors"
 	"fmt"
 )
 
@@ -59,8 +60,7 @@ func (bst *BST) Search(v interface{}) *Node {
 	}
 }
 
-func (bst *BST) Minimum() *Node {
-	c := bst.Root
+func (bst *BST) Minimum(c *Node) *Node {
 	for {
 		if c == nil || c.Left == nil {
 			return c
@@ -69,8 +69,7 @@ func (bst *BST) Minimum() *Node {
 	}
 }
 
-func (bst *BST) Maximum() *Node {
-	c := bst.Root
+func (bst *BST) Maximum(c *Node) *Node {
 	for {
 		if c == nil || c.Right == nil {
 			return c
@@ -85,10 +84,7 @@ func (bst *BST) Predessor(v interface{}) *Node {
 		return nil
 	}
 	if n.Left != nil {
-		var c *Node
-		for c = n.Left; c.Right != nil; c = c.Right {
-		}
-		return c
+		return bst.Maximum(n.Left)
 	} else {
 		var c *Node
 		for c = n.Parent; c != nil && c.Left == n; c, n = c.Parent, n.Parent {
@@ -103,10 +99,7 @@ func (bst *BST) Successor(v interface{}) *Node {
 		return nil
 	}
 	if n.Right != nil {
-		var c *Node
-		for c = n.Right; c.Left != nil; c = c.Left {
-		}
-		return c
+		return bst.Minimum(n.Right)
 	} else {
 		var c *Node
 		for c = n.Parent; c != nil && c.Right == n; c, n = c.Parent, n.Parent {
@@ -132,6 +125,48 @@ func (bst *BST) genString(c *Node, str *string) {
 }
 
 // Delete a node from BST should be the most difficult task
-func (bst *BST) Delete(v interface{}) error {
-	return nil
+func (bst *BST) Delete(v interface{}) (*Node, error) {
+	n := bst.Search(v)
+	if n == nil {
+		return nil, errors.New(fmt.Sprintf("%v does not exist in BST", v))
+	}
+	p := n.Parent
+	var pc **Node
+	if n == bst.Root {
+		pc = &bst.Root
+	} else {
+		if p.Left == n {
+			pc = &p.Left
+		} else {
+			pc = &p.Right
+		}
+	}
+	if n.Left == nil && n.Right == nil {
+		*pc = nil
+	} else if n.Left == nil {
+		*pc = n.Right
+		n.Right.Parent = p
+	} else if n.Right == nil {
+		*pc = n.Left
+		n.Left.Parent = p
+	} else {
+		pre := bst.Predessor(v)
+		if pre.Parent == n {
+			n.Parent.Left = pre
+			pre.Parent = n.Parent
+			pre.Right = n.Right
+		} else {
+			pre.Parent.Right = pre.Left
+			if pre.Left != nil {
+				pre.Left.Parent = pre.Parent
+			}
+			pre.Left = n.Left
+			pre.Right = n.Right
+			n.Left.Parent = pre
+			n.Right.Parent = pre
+			pre.Parent = p
+			*pc = pre
+		}
+	}
+	return n, nil
 }
