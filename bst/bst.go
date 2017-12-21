@@ -141,6 +141,7 @@ func (bst *BST) Delete(v interface{}) (*Node, error) {
 			pc = &p.Right
 		}
 	}
+
 	if n.Left == nil && n.Right == nil {
 		*pc = nil
 	} else if n.Left == nil {
@@ -151,15 +152,22 @@ func (bst *BST) Delete(v interface{}) (*Node, error) {
 		n.Left.Parent = p
 	} else {
 		pre := bst.Predessor(v)
+		// Tricky case when predessor is left child. In this case, simply replace the node to be
+		// deleted with its left child (which has no right child)
 		if pre.Parent == n {
 			n.Parent.Left = pre
 			pre.Parent = n.Parent
 			pre.Right = n.Right
 		} else {
+			// Replace node to be deleted with its predessor node
+
+			// Firstly, handle the links in the original place of predessor node
 			pre.Parent.Right = pre.Left
 			if pre.Left != nil {
 				pre.Left.Parent = pre.Parent
 			}
+
+			// Then, handle the links in the target place for the predessor node
 			pre.Left = n.Left
 			pre.Right = n.Right
 			n.Left.Parent = pre
