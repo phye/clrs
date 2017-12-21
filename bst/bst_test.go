@@ -43,3 +43,24 @@ func TestSearch(t *testing.T) {
 	n := bst.Search(8)
 	fmt.Printf("%v\n", n)
 }
+
+func TestMinMax(t *testing.T) {
+	bst := NewBST(numCompare)
+	bst.Insert(5)
+	bst.Insert(3)
+	bst.Insert(2)
+	bst.Insert(4)
+	bst.Insert(8)
+
+	fmt.Printf("%s", bst)
+	min := bst.Minimum()
+	max := bst.Maximum()
+	fmt.Printf("Minimum in tree is %v\n", min)
+	fmt.Printf("Maximum in tree is %v\n", max)
+
+	nbst := NewBST(numCompare)
+	nmin := nbst.Minimum()
+	nmax := nbst.Maximum()
+	fmt.Printf("Minimum in empty tree is %v\n", nmin)
+	fmt.Printf("Maximum in empty tree is %v\n", nmax)
+}

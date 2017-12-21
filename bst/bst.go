@@ -7,9 +7,10 @@ import (
 type (
 	Node struct {
 		// Value must be comparable!
-		Value interface{}
-		Left  *Node
-		Right *Node
+		Value  interface{}
+		Left   *Node
+		Right  *Node
+		Parent *Node
 	}
 
 	BST struct {
@@ -27,15 +28,18 @@ func NewBST(less Comparator) *BST {
 func (bst *BST) Insert(v interface{}) {
 	// Note that we can not simply use c := bst.Root, as the assignment to c blow will not be
 	// shown to bst.Root
+	var pp *Node
 	pc := &bst.Root
 	for {
 		if *pc == nil {
-			*pc = &Node{v, nil, nil}
+			*pc = &Node{v, nil, nil, pp}
 			return
 		}
 		if bst.less(v, (*pc).Value) {
+			pp = *pc
 			pc = &((*pc).Left)
 		} else {
+			pp = *pc
 			pc = &((*pc).Right)
 		}
 	}
@@ -52,6 +56,26 @@ func (bst *BST) Search(v interface{}) *Node {
 		} else {
 			c = c.Right
 		}
+	}
+}
+
+func (bst *BST) Minimum() *Node {
+	c := bst.Root
+	for {
+		if c == nil || c.Left == nil {
+			return c
+		}
+		c = c.Left
+	}
+}
+
+func (bst *BST) Maximum() *Node {
+	c := bst.Root
+	for {
+		if c == nil || c.Right == nil {
+			return c
+		}
+		c = c.Right
 	}
 }
 
