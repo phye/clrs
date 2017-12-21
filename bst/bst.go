@@ -151,7 +151,7 @@ func (bst *BST) Delete(v interface{}) (*Node, error) {
 		*pc = n.Left
 		n.Left.Parent = p
 	} else {
-		pre := bst.Predessor(v)
+		pre := bst.Maximum(n.Left)
 		// Tricky case when predessor is left child. In this case, simply replace the node to be
 		// deleted with its left child (which has no right child)
 		if pre.Parent == n {
@@ -177,4 +177,42 @@ func (bst *BST) Delete(v interface{}) (*Node, error) {
 		}
 	}
 	return n, nil
+}
+
+func (bst *BST) Transplant(u, v *Node) {
+	if u.Parent == nil {
+		bst.Root = v
+	} else if u.Parent.Left == u {
+		u.Parent.Left = v
+	} else {
+		u.Parent.Right = v
+	}
+	if v != nil {
+		v.Parent = u.Parent
+	}
+}
+
+func (bst *BST) CLRSDelete(v interface{}) (*Node, error) {
+	z := bst.Search(v)
+	if z == nil {
+		return nil, errors.New(fmt.Sprintf("%v does not exist in BST", v))
+	}
+
+	if z.Left == nil {
+		bst.Transplant(z, z.Right)
+	} else if z.Right == nil {
+		bst.Transplant(z, z.Left)
+	} else {
+		y := bst.Minimum(z.Right)
+		if y.Parent != z {
+			bst.Transplant(y, y.Right)
+			y.Right = z.Right
+			y.Right.Parent = y
+		}
+		bst.Transplant(z, y)
+		y.Left = z.Left
+		y.Left.Parent = y
+
+	}
+	return z, nil
 }

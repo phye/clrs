@@ -127,3 +127,21 @@ func TestDelete(t *testing.T) {
 	n2, _ := bst.Delete(100)
 	fmt.Printf("After delete %v, bst is %s", n2.Value, bst)
 }
+
+func TestCLRSDelete(t *testing.T) {
+	bst := NewBST(numCompare)
+	nums := []int{100, 80, 120, 50, 90, 110, 40, 70, 85, 93, 86, 92}
+	for i := 0; i < len(nums); i++ {
+		bst.Insert(nums[i])
+	}
+
+	if _, err := bst.CLRSDelete(77); err == nil {
+		t.Fatalf("Delete non existing node should result in failure")
+	}
+
+	n1, _ := bst.CLRSDelete(90)
+	fmt.Printf("After delete %v, bst is %s", n1.Value, bst)
+
+	n2, _ := bst.CLRSDelete(100)
+	fmt.Printf("After delete %v, bst is %s", n2.Value, bst)
+}
