@@ -79,6 +79,42 @@ func (bst *BST) Maximum() *Node {
 	}
 }
 
+func (bst *BST) Predessor(v interface{}) *Node {
+	n := bst.Search(v)
+	if n == nil {
+		return nil
+	}
+	if n.Left != nil {
+		var c *Node
+		for c = n.Left; c.Right != nil; c = c.Right {
+		}
+		return c
+	} else {
+		var c *Node
+		for c = n.Parent; c != nil && c.Left == n; c, n = c.Parent, n.Parent {
+		}
+		return c
+	}
+}
+
+func (bst *BST) Successor(v interface{}) *Node {
+	n := bst.Search(v)
+	if n == nil {
+		return nil
+	}
+	if n.Right != nil {
+		var c *Node
+		for c = n.Right; c.Left != nil; c = c.Left {
+		}
+		return c
+	} else {
+		var c *Node
+		for c = n.Parent; c != nil && c.Right == n; c, n = c.Parent, n.Parent {
+		}
+		return c
+	}
+}
+
 func (bst *BST) String() string {
 	ret := "\n"
 	bst.genString(bst.Root, &ret)
