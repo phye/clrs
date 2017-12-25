@@ -239,3 +239,12 @@ func TestPostOrder(t *testing.T) {
 		}
 	}
 }
+
+func TestLevelOrder(t *testing.T) {
+	bst := NewBST(numCompare)
+	nums := []int{100, 80, 120, 50, 90, 110, 40, 70, 85, 93, 86, 92}
+	for i := 0; i < len(nums); i++ {
+		bst.Insert(nums[i])
+	}
+	bst.levelOrder(bst.Root)
+}
