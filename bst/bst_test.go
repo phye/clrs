@@ -145,3 +145,97 @@ func TestCLRSDelete(t *testing.T) {
 	n2, _ := bst.CLRSDelete(100)
 	fmt.Printf("After delete %v, bst is %s", n2.Value, bst)
 }
+
+func TestBFS(t *testing.T) {
+	bst := NewBST(numCompare)
+	nums := []int{100, 80, 120, 50, 90, 110, 40, 70, 85, 93, 86, 92}
+	for i := 0; i < len(nums); i++ {
+		bst.Insert(nums[i])
+	}
+	bfs := bst.BFS(bst.Root)
+	fmt.Printf("BFS: %v\n", bfs)
+	expected := []int{100, 80, 120, 50, 90, 110, 40, 70, 85, 93, 86, 92}
+	for i := 0; i < len(bfs); i++ {
+		if bfs[i] != expected[i] {
+			t.Fatalf("Unexpected BFS result!")
+		}
+	}
+}
+
+func TestDFS(t *testing.T) {
+	bst := NewBST(numCompare)
+	nums := []int{100, 80, 120, 50, 90, 110, 40, 70, 85, 93, 86, 92}
+	for i := 0; i < len(nums); i++ {
+		bst.Insert(nums[i])
+	}
+	dfs := bst.DFS(bst.Root)
+	fmt.Printf("DFS: %v\n", dfs)
+	expected := []int{100, 80, 50, 40, 70, 90, 85, 86, 93, 92, 120, 110}
+	for i := 0; i < len(dfs); i++ {
+		if dfs[i] != expected[i] {
+			t.Fatalf("Unexpected DFS result!")
+		}
+	}
+}
+
+func TestPreOrder(t *testing.T) {
+	bst := NewBST(numCompare)
+	nums := []int{100, 80, 120, 50, 90, 110, 40, 70, 85, 93, 86, 92}
+	for i := 0; i < len(nums); i++ {
+		bst.Insert(nums[i])
+	}
+	res := bst.IterativePreOrder(bst.Root)
+	expected := []int{100, 80, 50, 40, 70, 90, 85, 86, 93, 92, 120, 110}
+	for i := 0; i < len(res); i++ {
+		if res[i] != expected[i] {
+			t.Fatalf("Unexpected PreOrder result!")
+		}
+	}
+}
+
+func TestInOrder(t *testing.T) {
+	bst := NewBST(numCompare)
+	nums := []int{100, 80, 120, 50, 90, 110, 40, 70, 85, 93, 86, 92}
+	for i := 0; i < len(nums); i++ {
+		bst.Insert(nums[i])
+	}
+	res := bst.InOrder(bst.Root)
+	expected := []int{40, 50, 70, 80, 85, 86, 90, 92, 93, 100, 110, 120}
+	for i := 0; i < len(res); i++ {
+		if res[i] != expected[i] {
+			t.Fatalf("Unexpected InOrder result!")
+		}
+	}
+
+	res = bst.IterativeInOrder(bst.Root)
+	fmt.Printf("InOrder1: %v \n", res)
+	for i := 0; i < len(res); i++ {
+		if res[i] != expected[i] {
+			t.Fatalf("Unexpected Iterative InOrder result!")
+		}
+	}
+
+	res = bst.IterativeInOrder2(bst.Root)
+	fmt.Printf("Inorder2: %v \n", res)
+	for i := 0; i < len(res); i++ {
+		if res[i] != expected[i] {
+			t.Fatalf("Unexpected Iterative InOrder result!")
+		}
+	}
+}
+
+func TestPostOrder(t *testing.T) {
+	bst := NewBST(numCompare)
+	nums := []int{100, 80, 120, 50, 90, 110, 40, 70, 85, 93, 86, 92}
+	for i := 0; i < len(nums); i++ {
+		bst.Insert(nums[i])
+	}
+	res := bst.IterativePostOrder(bst.Root)
+	expected := []int{40, 70, 50, 86, 85, 92, 93, 90, 80, 110, 120, 100}
+	fmt.Printf("PostOrder: %v \n", res)
+	for i := 0; i < len(res); i++ {
+		if res[i] != expected[i] {
+			t.Fatalf("Unexpected PostOrder result!")
+		}
+	}
+}
