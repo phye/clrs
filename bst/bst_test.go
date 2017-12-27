@@ -248,3 +248,13 @@ func TestLevelOrder(t *testing.T) {
 	}
 	bst.levelOrder(bst.Root)
 }
+
+func TestLCA(t *testing.T) {
+	bst := NewBST(numCompare)
+	nums := []int{100, 80, 120, 50, 90, 110, 40, 70, 85, 93, 86, 92}
+	for i := 0; i < len(nums); i++ {
+		bst.Insert(nums[i])
+	}
+	lca := bst.LowestCommonAncestor(bst.Search(90), bst.Search(70))
+	fmt.Printf("%v\n", lca)
+}
