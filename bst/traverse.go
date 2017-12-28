@@ -169,3 +169,29 @@ func (bst *BST) IterativePostOrder(n *Node) []interface{} {
 	}
 	return ret
 }
+
+func (bst *BST) IterativePostOrder2(n *Node) []interface{} {
+	stack := make([]*Node, 0)
+	rstack := make([]interface{}, 0)
+	stack = append(stack, n)
+	for {
+		if len(stack) == 0 {
+			break
+		}
+		cur := stack[len(stack)-1]
+		rstack = append(rstack, cur.Value)
+		stack = stack[:len(stack)-1]
+		if cur.Left != nil {
+			stack = append(stack, cur.Left)
+		}
+		if cur.Right != nil {
+			stack = append(stack, cur.Right)
+		}
+	}
+	l := len(rstack)
+	ret := make([]interface{}, l)
+	for i := 0; i < len(rstack); i++ {
+		ret[i] = rstack[l-1-i]
+	}
+	return ret
+}

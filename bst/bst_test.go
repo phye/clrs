@@ -230,7 +230,7 @@ func TestPostOrder(t *testing.T) {
 	for i := 0; i < len(nums); i++ {
 		bst.Insert(nums[i])
 	}
-	res := bst.IterativePostOrder(bst.Root)
+	res := bst.IterativePostOrder2(bst.Root)
 	expected := []int{40, 70, 50, 86, 85, 92, 93, 90, 80, 110, 120, 100}
 	fmt.Printf("PostOrder: %v \n", res)
 	for i := 0; i < len(res); i++ {
